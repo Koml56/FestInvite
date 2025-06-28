@@ -8,6 +8,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap');
 
+```
     * {
         margin: 0;
         padding: 0;
@@ -31,6 +32,13 @@
         text-align: center;
         position: relative;
         overflow: hidden;
+        margin-bottom: 0;
+    }
+    
+    .main-content {
+        margin-top: 0;
+        position: relative;
+        z-index: 2;
     }
     
     .greeting-text {
@@ -150,7 +158,7 @@
     
     .hero {
         text-align: center;
-        padding: 100px 0 80px;
+        padding: 100px 0 300px;
         position: relative;
         z-index: 2;
     }
@@ -211,7 +219,7 @@
         border: 1px solid rgba(255, 107, 53, 0.2);
         border-radius: 20px;
         padding: 60px 40px;
-        margin: 80px 0;
+        margin: 400px 0 80px 0;
         position: relative;
         overflow: hidden;
     }
@@ -465,31 +473,32 @@
 ```
 <div class="opening-section">
     <div class="container">
-        <h1 class="greeting-text" data-text="Hello Ebi and Bmies, you were invited for closed gastronomy degustation, made by chef Oleksii">
-            Hello Ebi and Bmies, you were invited for closed gastronomy degustation, made by chef Oleksii
+        <h1 class="greeting-text" data-text="Dear Ebi and Bmies, you have been cordially invited to an exclusive private degustation, crafted by Chef Oleksii">
+            Dear Ebi and Bmies, you have been cordially invited to an exclusive private degustation, crafted by Chef Oleksii
         </h1>
-        <div class="scroll-indicator">Scroll to explore</div>
+        <div class="scroll-indicator">Begin the journey</div>
     </div>
 </div>
 
-<div class="container">
+<div class="main-content">
+    <div class="container">
     <div class="hero">
         <h1 class="logo">FestBurger</h1>
-        <p class="subtitle">Exclusive Tasting Experience</p>
+        <p class="subtitle">An Intimate Culinary Experience</p>
         <p class="intro-text">
-            This is not just a burger — this is a story of quality, a journey that each animal takes from beginning to end, the conditions and care in which it was raised.
+            This is not just a burger — this is a story of quality, craftsmanship, and the journey from farm to plate. Each ingredient has been carefully selected to showcase the finest Nordic flavors and sustainable practices.
         </p>
     </div>
     
     <div class="experience-section">
-        <h2 class="section-title">The Gastronomic Journey</h2>
+                        <h2 class="section-title">A Culinary Voyage</h2>
         
         <div class="course-steps">
             <div class="step">
                 <div class="step-number">🍷</div>
                 <div class="step-content">
                     <h3>Welcome Reception</h3>
-                    <p>Begin with a glass of <span class="brand">Château Marginale</span> Finnish organic wine, paired with artisanal croutons made from our house-made brioche, topped with <span class="brand">Aurinko Farm</span> gorgonzola and local <span class="brand">Lapland Gold</span> fig preserve.</p>
+                    <p>Begin with a glass of <span class="brand">Karelian Cellars</span> Finnish organic wine, paired with artisanal croutons made from our house-made brioche, topped with <span class="brand">Nordström Farm</span> aged cheese and local <span class="brand">Lakeland Berry</span> preserve.</p>
                 </div>
             </div>
             
@@ -497,7 +506,7 @@
                 <div class="step-number">🥩</div>
                 <div class="step-content">
                     <h3>The Meat Story</h3>
-                    <p>Discover the story of our premium beef from <span class="brand">Hämeenlinna Heritage Farm</span>. Meet the farmers through our presentation while we hand-form the patty using our precision press, showcasing the ethical conditions and sustainable practices that define our sourcing.</p>
+                    <p>Discover the story of our premium beef from <span class="brand">Kanta-Häme Organic Ranch</span>. Meet the farmers through our presentation while we hand-form the patty using our precision press, showcasing the ethical conditions and sustainable practices that define our sourcing.</p>
                 </div>
             </div>
             
@@ -505,7 +514,7 @@
                 <div class="step-number">👨‍🍳</div>
                 <div class="step-content">
                     <h3>Artisan Condiments</h3>
-                    <p>Experience our signature rosemary-infused mayonnaise, made fresh with <span class="brand">Nordic Nest</span> free-range egg yolks and our house-made rosemary oil. Each guest will taste the difference that local, premium ingredients make.</p>
+                    <p>Experience our signature herb-infused mayonnaise, made fresh with <span class="brand">Lakeshore Poultry</span> free-range egg yolks and our house-made herb oil. Each guest will taste the difference that local, premium ingredients make.</p>
                 </div>
             </div>
             
@@ -513,31 +522,33 @@
                 <div class="step-number">🍔</div>
                 <div class="step-content">
                     <h3>The Final Assembly</h3>
-                    <p>Watch as we assemble your burger with <span class="brand">Suomi Sourdough</span> brioche buns, <span class="brand">Arctic Greens</span> organic lettuce, and <span class="brand">Midnight Sun</span> artisan cheese, creating a masterpiece that redefines fast food excellence.</p>
+                    <p>Watch as we assemble your burger with <span class="brand">Tampere Artisan Bakery</span> brioche buns, <span class="brand">Greenhouse Nordic</span> organic lettuce, and <span class="brand">Saimaa Dairy</span> artisan cheese, creating a masterpiece that redefines fast food excellence.</p>
                 </div>
             </div>
         </div>
     </div>
     
     <div class="reservation-section">
-        <h2 class="reservation-title">Reserve Your Experience</h2>
-        <p style="font-size: 1.2rem; margin-bottom: 30px;">Private reservation for</p>
+        <h2 class="reservation-title">Secure Your Place at the Table</h2>
+        <p style="font-size: 1.2rem; margin-bottom: 30px;">This intimate evening has been curated exclusively for</p>
         
         <div class="hosts">
             <div class="host">Ebi</div>
             <div class="host">Burgermies</div>
         </div>
         
-        <button class="reserve-btn" onclick="showContactInfo()">Reserve Your Seat</button>
+        <button class="reserve-btn" onclick="showContactInfo()">Accept This Invitation</button>
         
         <div class="contact-info" id="contactInfo">
-            <h3>Booking Information</h3>
-            <p><strong>Contact:</strong> Oleksii</p>
-            <p><strong>For dates and availability:</strong> Please reach out directly</p>
-            <p class="welcome-text">Welcome to an exclusive culinary experience that will transform your perspective on gourmet fast food.</p>
+            <h3>Reservation Details</h3>
+            <p><strong>Your Host:</strong> Oleksii</p>
+            <p><strong>To confirm your attendance:</strong> Please connect directly for scheduling</p>
+            <p class="welcome-text">Welcome to an exclusive culinary experience that will redefine your understanding of premium dining.</p>
         </div>
     </div>
+    </div>
 </div>
+
 
 <script>
     // Create floating particles
@@ -576,9 +587,33 @@
         const parallax = document.querySelector('.hero');
         const speed = scrolled * 0.5;
         parallax.style.transform = `translateY(${speed}px)`;
+        
+        // Fade out hero content as journey section approaches
+        const heroContent = document.querySelector('.hero');
+        const experienceSection = document.querySelector('.experience-section');
+        
+        if (heroContent && experienceSection) {
+            const heroRect = heroContent.getBoundingClientRect();
+            const experienceRect = experienceSection.getBoundingClientRect();
+            
+            // Calculate fade based on how close journey section is to top
+            const fadeStart = window.innerHeight * 0.7; // Start fading when journey is 70% down screen
+            const fadeEnd = window.innerHeight * 0.3;   // Fully faded when journey is 30% down screen
+            
+            if (experienceRect.top <= fadeStart && experienceRect.top > fadeEnd) {
+                // Calculate opacity (1 to 0)
+                const fadeProgress = (fadeStart - experienceRect.top) / (fadeStart - fadeEnd);
+                const opacity = Math.max(0, 1 - fadeProgress);
+                heroContent.style.opacity = opacity;
+            } else if (experienceRect.top <= fadeEnd) {
+                heroContent.style.opacity = 0;
+            } else {
+                heroContent.style.opacity = 1;
+            }
+        }
     });
 </script>
-
+```
 
 </body>
 </html>
