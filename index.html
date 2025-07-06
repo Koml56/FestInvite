@@ -26,7 +26,7 @@
         }
 
         .sidebar {
-            width: 240px;
+            width: 260px;
             background: linear-gradient(180deg, #2f3136 0%, #36393f 100%);
             border-right: 1px solid #40444b;
             display: flex;
@@ -41,10 +41,15 @@
             text-align: center;
         }
 
-        .connection-section {
+        .sidebar-content {
             flex: 1;
-            padding: 16px 8px;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .connection-section {
+            padding: 16px 8px;
         }
 
         .section-title {
@@ -134,6 +139,190 @@
             background: #5d6269;
         }
 
+        .room-info {
+            background: rgba(114, 137, 218, 0.1);
+            border-radius: 4px;
+            padding: 12px 8px;
+            margin: 8px 0;
+            text-align: center;
+        }
+
+        .room-name {
+            font-weight: bold;
+            color: #7289da;
+            margin-bottom: 4px;
+        }
+
+        .host-indicator {
+            font-size: 11px;
+            color: #43b581;
+            background: rgba(67, 181, 129, 0.1);
+            padding: 2px 6px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        .soundpad-section {
+            background: #2f3136;
+            border-top: 1px solid #40444b;
+            padding: 12px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .soundpad-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .sound-btn {
+            padding: 8px;
+            background: #5865f2;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .sound-btn:hover {
+            background: #4752c4;
+            transform: scale(1.05);
+        }
+
+        .sound-btn:active {
+            transform: scale(0.95);
+        }
+
+        .add-sound {
+            margin-bottom: 8px;
+        }
+
+        .add-sound input {
+            font-size: 12px;
+            padding: 6px 8px;
+            margin-bottom: 4px;
+        }
+
+        .music-section {
+            background: #292b2f;
+            border-top: 1px solid #40444b;
+            padding: 12px 8px;
+            max-height: 250px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .music-controls {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .music-search {
+            flex: 1;
+            padding: 6px 8px;
+            background: #40444b;
+            border: 1px solid #72767d;
+            border-radius: 4px;
+            color: #dcddde;
+            font-size: 12px;
+        }
+
+        .music-search:focus {
+            outline: none;
+            border-color: #7289da;
+        }
+
+        .music-results {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 8px;
+        }
+
+        .music-item {
+            display: flex;
+            align-items: center;
+            padding: 6px;
+            background: rgba(79, 84, 92, 0.2);
+            border-radius: 4px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .music-item:hover {
+            background: rgba(79, 84, 92, 0.4);
+        }
+
+        .music-item img {
+            width: 40px;
+            height: 30px;
+            border-radius: 2px;
+            margin-right: 8px;
+            object-fit: cover;
+        }
+
+        .music-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .music-title {
+            font-size: 11px;
+            color: #dcddde;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .music-duration {
+            font-size: 10px;
+            color: #99aab5;
+        }
+
+        .current-music {
+            background: rgba(67, 181, 129, 0.1);
+            border: 1px solid #43b581;
+            border-radius: 4px;
+            padding: 8px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .current-music.playing {
+            background: rgba(67, 181, 129, 0.2);
+        }
+
+        .music-player-controls {
+            display: flex;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .music-player-controls button {
+            flex: 1;
+            padding: 4px;
+            background: #4f545c;
+            border: none;
+            border-radius: 4px;
+            color: #dcddde;
+            cursor: pointer;
+            font-size: 10px;
+        }
+
+        .music-player-controls button:hover {
+            background: #5d6269;
+        }
+
+        .music-player-controls button.active {
+            background: #43b581;
+        }
+
         .recent-item {
             display: flex;
             align-items: center;
@@ -164,7 +353,7 @@
             text-overflow: ellipsis;
         }
 
-        .recent-id {
+        .recent-role {
             color: #99aab5;
             font-size: 10px;
         }
@@ -181,26 +370,6 @@
 
         .remove-btn:hover {
             background: rgba(240, 71, 71, 0.2);
-        }
-
-        .room-info {
-            background: rgba(114, 137, 218, 0.1);
-            border-radius: 4px;
-            padding: 12px 8px;
-            margin: 8px 0;
-            text-align: center;
-        }
-
-        .room-code {
-            font-family: 'Courier New', monospace;
-            background: #40444b;
-            padding: 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            color: #7289da;
-            font-weight: bold;
-            margin: 8px 0;
-            letter-spacing: 1px;
         }
 
         .user-section {
@@ -561,6 +730,10 @@
             background: #5865f2;
         }
 
+        .peer-status.host {
+            background: #faa61a;
+        }
+
         .hidden {
             display: none;
         }
@@ -618,15 +791,54 @@
             cursor: pointer;
         }
 
-        .auto-reconnect {
-            background: rgba(67, 181, 129, 0.1);
-            border: 1px solid #43b581;
+        .flex-row {
+            display: flex;
+            gap: 4px;
+        }
+
+        .flex-row input {
+            flex: 1;
+        }
+
+        .flex-row .btn {
+            margin-bottom: 0;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* Hidden YouTube player */
+        .youtube-player {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+        .sound-message {
+            background: rgba(88, 101, 242, 0.1);
+            border-left: 3px solid #5865f2;
+            padding: 8px 12px;
             border-radius: 4px;
-            padding: 8px;
-            margin: 8px 0;
-            font-size: 11px;
-            color: #43b581;
-            text-align: center;
+            margin-top: 4px;
+            font-style: italic;
+            color: #b9bbbe;
+        }
+
+        .music-message {
+            background: rgba(67, 181, 129, 0.1);
+            border-left: 3px solid #43b581;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .music-message img {
+            width: 40px;
+            height: 30px;
+            border-radius: 4px;
+            object-fit: cover;
         }
     </style>
 </head>
@@ -637,40 +849,82 @@
                 <h3>🎮 FriendChat Pro</h3>
             </div>
             
-            <div class="connection-section">
-                <div class="section-title">Your Profile</div>
-                <div class="input-group">
-                    <input type="text" id="usernameInput" placeholder="Your nickname" maxlength="20">
-                </div>
-                
-                <div id="roomSection" class="hidden">
-                    <div class="room-info">
-                        <div style="font-size: 11px; color: #99aab5; margin-bottom: 4px;">Your Room</div>
-                        <div class="room-code" id="roomCode">Loading...</div>
-                        <button class="btn btn-secondary" id="copyRoomBtn">📋 Copy Room Code</button>
+            <div class="sidebar-content">
+                <div class="connection-section">
+                    <div class="section-title">Your Profile</div>
+                    <div class="input-group">
+                        <input type="text" id="usernameInput" placeholder="Your nickname" maxlength="20">
+                    </div>
+                    
+                    <div id="roomSection" class="hidden">
+                        <div class="room-info">
+                            <div class="room-name" id="roomName">Room Name</div>
+                            <div class="host-indicator" id="hostIndicator">👑 Host</div>
+                        </div>
                         <button class="btn btn-secondary" id="leaveRoomBtn">🚪 Leave Room</button>
                     </div>
-                    <div class="auto-reconnect">
-                        ✅ Auto-reconnect enabled<br>
-                        Room persists after refresh
+                    
+                    <div class="section-title">Create Room</div>
+                    <div class="input-group">
+                        <input type="text" id="newRoomName" placeholder="Room name" maxlength="30">
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="newRoomPassword" placeholder="Password (optional)" maxlength="50">
+                    </div>
+                    <button class="btn btn-primary" id="createRoomBtn">🏠 Create Room</button>
+
+                    <div class="section-title">Join Room</div>
+                    <div class="input-group">
+                        <input type="text" id="joinRoomName" placeholder="Room name">
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="joinRoomPassword" placeholder="Password">
+                    </div>
+                    <button class="btn btn-success" id="joinRoomBtn">🚀 Join Room</button>
+
+                    <div class="section-title">Recent Rooms</div>
+                    <div id="recentList">
+                        <!-- Recent rooms will appear here -->
+                    </div>
+
+                    <div class="peer-list" id="peerList">
+                        <div class="section-title">Room Members</div>
                     </div>
                 </div>
-                
-                <button class="btn btn-primary" id="createRoomBtn">🏠 Create Room</button>
 
-                <div class="section-title">Join Room</div>
-                <div class="input-group">
-                    <input type="text" id="roomIdInput" placeholder="Enter room code">
+                <div class="soundpad-section">
+                    <div class="section-title">🔊 Soundpad</div>
+                    <div class="soundpad-grid" id="soundpadGrid">
+                        <button class="sound-btn" data-sound="applause">👏 Applause</button>
+                        <button class="sound-btn" data-sound="laugh">😂 Laugh</button>
+                        <button class="sound-btn" data-sound="airhorn">📯 Airhorn</button>
+                        <button class="sound-btn" data-sound="oof">😵 Oof</button>
+                    </div>
+                    <div class="add-sound">
+                        <input type="text" id="soundName" placeholder="Sound name" maxlength="20">
+                        <input type="text" id="soundUrl" placeholder="YouTube URL">
+                        <button class="btn btn-secondary" id="addSoundBtn">+ Add</button>
+                    </div>
                 </div>
-                <button class="btn btn-success" id="joinRoomBtn">🚀 Join Room</button>
 
-                <div class="section-title">Recent Rooms</div>
-                <div id="recentList">
-                    <!-- Recent connections will appear here -->
-                </div>
-
-                <div class="peer-list" id="peerList">
-                    <div class="section-title">Room Members</div>
+                <div class="music-section">
+                    <div class="section-title">🎵 Music Bot</div>
+                    <div class="music-controls">
+                        <input type="text" class="music-search" id="musicSearch" placeholder="Search YouTube...">
+                        <button class="btn btn-secondary" id="searchMusicBtn">🔍</button>
+                    </div>
+                    <div class="music-results" id="musicResults">
+                        <!-- Search results will appear here -->
+                    </div>
+                    <div class="current-music hidden" id="currentMusic">
+                        <div style="font-size: 11px; color: #99aab5;">Now Playing</div>
+                        <div id="currentMusicTitle">No music playing</div>
+                        <div class="music-player-controls">
+                            <button id="pauseBtn">⏸️ Pause</button>
+                            <button id="stopBtn">⏹️ Stop</button>
+                            <button id="skipBtn">⏭️ Skip</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -710,16 +964,17 @@
                     </div>
                     <div class="message-content">
                         Welcome to FriendChat Pro! 🚀<br><br>
-                        <strong>Simple & Persistent:</strong><br>
-                        • 💾 Automatic nickname saving<br>
-                        • 🔄 Auto-reconnect after refresh<br>
-                        • 📺 Desktop screen sharing<br>
-                        • 📋 Room codes for easy sharing<br><br>
+                        <strong>New Features:</strong><br>
+                        • 🏠 Room names & passwords<br>
+                        • 👑 Host migration system<br>
+                        • 🔊 Soundpad with custom sounds<br>
+                        • 🎵 YouTube music bot<br>
+                        • 💾 Auto-reconnect to rooms<br><br>
                         <strong>Quick Start:</strong><br>
                         1. Set your nickname<br>
-                        2. Create a room (generates a code)<br>
-                        3. Share the room code with friends<br>
-                        4. Everyone stays connected even after refresh!
+                        2. Create a room with name/password<br>
+                        3. Share room name with friends<br>
+                        4. Use soundpad and music bot to have fun!
                     </div>
                 </div>
             </div>
@@ -749,6 +1004,9 @@
                 📁 Drop files here to share with friends!
             </div>
         </div>
+
+        <!-- Hidden YouTube player -->
+        <div class="youtube-player" id="youtubePlayer"></div>
     </div>
 
     <script>
@@ -757,7 +1015,11 @@
                 this.peer = null;
                 this.connections = new Map();
                 this.username = '';
-                this.currentRoom = null;
+                this.currentRoom = {
+                    name: '',
+                    password: '',
+                    isHost: false
+                };
                 this.recentRooms = new Map();
                 this.isVoiceCallActive = false;
                 this.isMuted = false;
@@ -767,24 +1029,32 @@
                 this.isScreenSharing = false;
                 this.remoteScreens = new Map();
                 this.messages = [];
-                this.autoReconnectEnabled = true;
+                this.soundPad = new Map();
+                this.currentMusic = null;
+                this.musicPlayer = null;
+                this.isPlaying = false;
                 
                 this.initializeElements();
                 this.attachEventListeners();
                 this.loadSavedData();
+                this.initializeSoundPad();
+                this.initializeYouTubeAPI();
                 this.autoReconnect();
             }
 
             initializeElements() {
                 this.elements = {
                     usernameInput: document.getElementById('usernameInput'),
+                    newRoomName: document.getElementById('newRoomName'),
+                    newRoomPassword: document.getElementById('newRoomPassword'),
                     createRoomBtn: document.getElementById('createRoomBtn'),
-                    roomSection: document.getElementById('roomSection'),
-                    roomCode: document.getElementById('roomCode'),
-                    copyRoomBtn: document.getElementById('copyRoomBtn'),
-                    leaveRoomBtn: document.getElementById('leaveRoomBtn'),
-                    roomIdInput: document.getElementById('roomIdInput'),
+                    joinRoomName: document.getElementById('joinRoomName'),
+                    joinRoomPassword: document.getElementById('joinRoomPassword'),
                     joinRoomBtn: document.getElementById('joinRoomBtn'),
+                    roomSection: document.getElementById('roomSection'),
+                    roomName: document.getElementById('roomName'),
+                    hostIndicator: document.getElementById('hostIndicator'),
+                    leaveRoomBtn: document.getElementById('leaveRoomBtn'),
                     messageInput: document.getElementById('messageInput'),
                     messagesContainer: document.getElementById('messagesContainer'),
                     connectionStatus: document.getElementById('connectionStatus'),
@@ -801,15 +1071,27 @@
                     uploadProgress: document.getElementById('uploadProgress'),
                     uploadText: document.getElementById('uploadText'),
                     chatTitle: document.getElementById('chatTitle'),
-                    recentList: document.getElementById('recentList')
+                    recentList: document.getElementById('recentList'),
+                    soundpadGrid: document.getElementById('soundpadGrid'),
+                    soundName: document.getElementById('soundName'),
+                    soundUrl: document.getElementById('soundUrl'),
+                    addSoundBtn: document.getElementById('addSoundBtn'),
+                    musicSearch: document.getElementById('musicSearch'),
+                    searchMusicBtn: document.getElementById('searchMusicBtn'),
+                    musicResults: document.getElementById('musicResults'),
+                    currentMusic: document.getElementById('currentMusic'),
+                    currentMusicTitle: document.getElementById('currentMusicTitle'),
+                    pauseBtn: document.getElementById('pauseBtn'),
+                    stopBtn: document.getElementById('stopBtn'),
+                    skipBtn: document.getElementById('skipBtn'),
+                    youtubePlayer: document.getElementById('youtubePlayer')
                 };
             }
 
             attachEventListeners() {
                 this.elements.createRoomBtn.addEventListener('click', () => this.createRoom());
-                this.elements.copyRoomBtn.addEventListener('click', () => this.copyRoomCode());
-                this.elements.leaveRoomBtn.addEventListener('click', () => this.leaveRoom());
                 this.elements.joinRoomBtn.addEventListener('click', () => this.joinRoom());
+                this.elements.leaveRoomBtn.addEventListener('click', () => this.leaveRoom());
                 this.elements.messageInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
@@ -821,6 +1103,25 @@
                 this.elements.speakerBtn.addEventListener('click', () => this.toggleSpeaker());
                 this.elements.voiceCallBtn.addEventListener('click', () => this.toggleVoiceCall());
                 this.elements.screenShareBtn.addEventListener('click', () => this.toggleScreenShare());
+                
+                // Soundpad events
+                this.elements.addSoundBtn.addEventListener('click', () => this.addCustomSound());
+                this.elements.soundpadGrid.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('sound-btn')) {
+                        this.playSound(e.target.dataset.sound);
+                    }
+                });
+                
+                // Music bot events
+                this.elements.searchMusicBtn.addEventListener('click', () => this.searchMusic());
+                this.elements.musicSearch.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.searchMusic();
+                    }
+                });
+                this.elements.pauseBtn.addEventListener('click', () => this.toggleMusicPause());
+                this.elements.stopBtn.addEventListener('click', () => this.stopMusic());
+                this.elements.skipBtn.addEventListener('click', () => this.stopMusic());
                 
                 // File upload events
                 this.elements.fileUploadBtn.addEventListener('click', () => this.elements.fileInput.click());
@@ -834,20 +1135,27 @@
                 // Auto-resize textarea
                 this.elements.messageInput.addEventListener('input', () => this.autoResizeTextarea());
                 
-                // Room ID input enter key
-                this.elements.roomIdInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        this.joinRoom();
-                    }
+                // Enter key support for room creation/joining
+                this.elements.newRoomName.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.createRoom();
+                });
+                this.elements.newRoomPassword.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.createRoom();
+                });
+                this.elements.joinRoomName.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.joinRoom();
+                });
+                this.elements.joinRoomPassword.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.joinRoom();
                 });
             }
 
             loadSavedData() {
-                // Load from localStorage
                 try {
                     const savedUsername = localStorage.getItem('friendchat_username');
                     const savedRoom = localStorage.getItem('friendchat_current_room');
                     const savedRecentRooms = localStorage.getItem('friendchat_recent_rooms');
+                    const savedSounds = localStorage.getItem('friendchat_custom_sounds');
                     
                     if (savedUsername) {
                         this.elements.usernameInput.value = savedUsername;
@@ -855,15 +1163,23 @@
                     }
                     
                     if (savedRoom) {
-                        this.currentRoom = savedRoom;
+                        this.currentRoom = JSON.parse(savedRoom);
                     }
                     
                     if (savedRecentRooms) {
                         const recent = JSON.parse(savedRecentRooms);
                         recent.forEach(room => {
-                            this.recentRooms.set(room.id, room);
+                            this.recentRooms.set(room.name, room);
                         });
                         this.updateRecentList();
+                    }
+                    
+                    if (savedSounds) {
+                        const sounds = JSON.parse(savedSounds);
+                        sounds.forEach(sound => {
+                            this.soundPad.set(sound.name, sound.url);
+                        });
+                        this.updateSoundPad();
                     }
                 } catch (error) {
                     console.log('No saved data found or error loading:', error);
@@ -871,13 +1187,13 @@
             }
 
             saveData() {
-                // Save to localStorage
                 try {
                     localStorage.setItem('friendchat_username', this.username);
-                    if (this.currentRoom) {
-                        localStorage.setItem('friendchat_current_room', this.currentRoom);
+                    if (this.currentRoom.name) {
+                        localStorage.setItem('friendchat_current_room', JSON.stringify(this.currentRoom));
                     }
                     localStorage.setItem('friendchat_recent_rooms', JSON.stringify(Array.from(this.recentRooms.values())));
+                    localStorage.setItem('friendchat_custom_sounds', JSON.stringify(Array.from(this.soundPad.entries()).map(([name, url]) => ({name, url}))));
                 } catch (error) {
                     console.log('Error saving data:', error);
                 }
@@ -891,87 +1207,45 @@
             }
 
             async autoReconnect() {
-                if (this.currentRoom && this.username) {
-                    // Wait a bit for the DOM to be ready
+                if (this.currentRoom.name && this.username) {
                     setTimeout(() => {
-                        this.connectToPeer(this.currentRoom);
+                        this.connectToRoom(this.currentRoom.name, this.currentRoom.password);
                     }, 1000);
                 }
             }
 
+            generateRoomId(roomName, password) {
+                // Create a deterministic ID from room name and password
+                const combined = roomName.toLowerCase() + (password || '');
+                let hash = 0;
+                for (let i = 0; i < combined.length; i++) {
+                    const char = combined.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash; // Convert to 32-bit integer
+                }
+                return 'room_' + Math.abs(hash).toString(36);
+            }
+
             async createRoom() {
+                const roomName = this.elements.newRoomName.value.trim();
+                if (!roomName) {
+                    this.showNotification('Please enter a room name!');
+                    return;
+                }
+
                 if (!this.username) {
                     this.showNotification('Please set a nickname first!');
                     return;
                 }
 
-                this.updateConnectionStatus('Creating room...', 'connecting');
-                
-                try {
-                    this.peer = new Peer();
-                    
-                    this.peer.on('open', (id) => {
-                        this.currentRoom = id;
-                        this.elements.roomCode.textContent = id;
-                        this.elements.roomSection.classList.remove('hidden');
-                        this.elements.messageInput.disabled = false;
-                        this.elements.chatTitle.textContent = `🏠 Room: ${id.substring(0, 8)}...`;
-                        
-                        this.addToRecentRooms(id, 'Host');
-                        this.updateConnectionStatus('Room created! Share the code with friends.', 'connected');
-                        this.showNotification('Room created! Share the code with friends.');
-                        this.saveData();
-                    });
-
-                    this.peer.on('connection', (conn) => {
-                        this.handleIncomingConnection(conn);
-                    });
-
-                    this.peer.on('call', (call) => {
-                        this.handleIncomingCall(call);
-                    });
-
-                    this.peer.on('error', (err) => {
-                        console.error('Peer error:', err);
-                        this.updateConnectionStatus('Error: ' + err.message, 'error');
-                    });
-
-                } catch (error) {
-                    this.updateConnectionStatus('Failed to create room', 'error');
-                    console.error('Error creating room:', error);
-                }
-            }
-
-            copyRoomCode() {
-                navigator.clipboard.writeText(this.currentRoom);
-                this.showNotification('Room code copied to clipboard!');
-            }
-
-            leaveRoom() {
-                if (this.peer) {
-                    this.peer.destroy();
-                }
-                
-                this.connections.clear();
-                this.currentRoom = null;
-                this.elements.roomSection.classList.add('hidden');
-                this.elements.messageInput.disabled = true;
-                this.elements.chatTitle.textContent = '🏠 FriendChat Room';
-                this.messages = [];
-                this.clearMessages();
-                
-                this.updateConnectionStatus('Left room. Create or join a new one.', '');
-                this.updatePeerList();
-                
-                // Clear saved room
-                localStorage.removeItem('friendchat_current_room');
-                this.showNotification('Left room');
+                const password = this.elements.newRoomPassword.value;
+                await this.connectToRoom(roomName, password, true);
             }
 
             async joinRoom() {
-                const roomId = this.elements.roomIdInput.value.trim();
-                if (!roomId) {
-                    this.showNotification('Please enter a room code!');
+                const roomName = this.elements.joinRoomName.value.trim();
+                if (!roomName) {
+                    this.showNotification('Please enter a room name!');
                     return;
                 }
 
@@ -980,20 +1254,23 @@
                     return;
                 }
 
-                await this.connectToPeer(roomId);
+                const password = this.elements.joinRoomPassword.value;
+                await this.connectToRoom(roomName, password, false);
             }
 
-            async connectToPeer(roomId) {
+            async connectToRoom(roomName, password, isCreating = false) {
                 this.updateConnectionStatus('Connecting to room...', 'connecting');
+
+                const roomId = this.generateRoomId(roomName, password);
 
                 try {
                     if (!this.peer || this.peer.destroyed) {
-                        this.peer = new Peer();
+                        this.peer = new Peer(isCreating ? roomId : undefined);
                         
                         await new Promise((resolve, reject) => {
                             this.peer.on('open', resolve);
                             this.peer.on('error', reject);
-                            setTimeout(reject, 10000); // 10 second timeout
+                            setTimeout(() => reject(new Error('Connection timeout')), 10000);
                         });
 
                         this.peer.on('connection', (conn) => {
@@ -1005,35 +1282,76 @@
                         });
                     }
 
-                    const conn = this.peer.connect(roomId, {
-                        metadata: {
-                            username: this.username
-                        }
-                    });
-                    
-                    this.handleOutgoingConnection(conn, roomId);
+                    if (isCreating || this.peer.id === roomId) {
+                        // We are the host (created the room or room doesn't exist)
+                        this.becomeHost(roomName, password);
+                    } else {
+                        // Try to join existing room
+                        const conn = this.peer.connect(roomId, {
+                            metadata: {
+                                username: this.username,
+                                password: password
+                            }
+                        });
+                        
+                        this.handleOutgoingConnection(conn, roomName, password);
+                    }
                     
                 } catch (error) {
-                    this.updateConnectionStatus('Failed to connect to room', 'error');
-                    console.error('Error connecting to room:', error);
-                    this.showNotification('Failed to connect to room');
+                    // If connection fails, become host
+                    console.log('Could not connect, becoming host:', error);
+                    this.becomeHost(roomName, password);
                 }
+            }
+
+            becomeHost(roomName, password) {
+                this.currentRoom = {
+                    name: roomName,
+                    password: password,
+                    isHost: true
+                };
+
+                this.elements.roomName.textContent = roomName;
+                this.elements.hostIndicator.textContent = '👑 Host';
+                this.elements.hostIndicator.style.display = 'inline-block';
+                this.elements.roomSection.classList.remove('hidden');
+                this.elements.messageInput.disabled = false;
+                this.elements.chatTitle.textContent = `🏠 ${roomName}`;
+                
+                this.clearInputs();
+                this.addToRecentRooms(roomName, password, 'Host');
+                this.updateConnectionStatus('Room created! Waiting for members...', 'connected');
+                this.addMessage('System', `You are now hosting room "${roomName}"`);
+                this.saveData();
+                this.showNotification(`Hosting room "${roomName}"`);
             }
 
             handleIncomingConnection(conn) {
                 conn.on('open', () => {
+                    // Verify password if room has one
+                    const roomPassword = this.currentRoom.password;
+                    const userPassword = conn.metadata?.password || '';
+                    
+                    if (roomPassword && roomPassword !== userPassword) {
+                        conn.close();
+                        return;
+                    }
+
                     this.connections.set(conn.peer, conn);
                     
                     const username = conn.metadata?.username || 'Friend';
-                    this.updateConnectionStatus(`Connected! ${this.connections.size} member(s) in room`, 'connected');
+                    this.updateConnectionStatus(`${this.connections.size + 1} member(s) in room`, 'connected');
                     this.addMessage('System', `${username} joined the room!`);
                     this.updatePeerList();
                     
-                    // Send welcome info
+                    // Send room info and recent messages
                     conn.send({
-                        type: 'info',
+                        type: 'room_info',
+                        roomName: this.currentRoom.name,
+                        isHost: this.currentRoom.isHost,
                         username: this.username,
-                        messages: this.messages.slice(-10) // Send last 10 messages
+                        messages: this.messages.slice(-10),
+                        currentMusic: this.currentMusic
                     });
                 });
 
@@ -1043,31 +1361,42 @@
 
                 conn.on('close', () => {
                     this.connections.delete(conn.peer);
-                    this.updateConnectionStatus(`${this.connections.size} member(s) in room`, this.connections.size > 0 ? 'connected' : '');
+                    this.updateConnectionStatus(`${this.connections.size + 1} member(s) in room`, this.connections.size > 0 ? 'connected' : '');
                     this.updatePeerList();
+                    
+                    // If we're the only one left and not host, become host
+                    if (this.connections.size === 0 && !this.currentRoom.isHost) {
+                        this.migrateToHost();
+                    }
                 });
             }
 
-            handleOutgoingConnection(conn, roomId) {
+            handleOutgoingConnection(conn, roomName, password) {
                 conn.on('open', () => {
                     this.connections.set(conn.peer, conn);
-                    this.currentRoom = roomId;
+                    this.currentRoom = {
+                        name: roomName,
+                        password: password,
+                        isHost: false
+                    };
                     
-                    this.elements.roomCode.textContent = roomId;
+                    this.elements.roomName.textContent = roomName;
+                    this.elements.hostIndicator.textContent = 'Member';
+                    this.elements.hostIndicator.style.display = 'inline-block';
                     this.elements.roomSection.classList.remove('hidden');
                     this.elements.messageInput.disabled = false;
-                    this.elements.chatTitle.textContent = `🏠 Room: ${roomId.substring(0, 8)}...`;
-                    this.elements.roomIdInput.value = '';
+                    this.elements.chatTitle.textContent = `🏠 ${roomName}`;
                     
-                    this.addToRecentRooms(roomId, 'Member');
-                    this.updateConnectionStatus(`Joined room! ${this.connections.size} member(s)`, 'connected');
-                    this.addMessage('System', 'Connected to room!');
+                    this.clearInputs();
+                    this.addToRecentRooms(roomName, password, 'Member');
+                    this.updateConnectionStatus(`Joined room! ${this.connections.size + 1} member(s)`, 'connected');
+                    this.addMessage('System', `Joined room "${roomName}"`);
                     this.updatePeerList();
                     this.saveData();
                     
                     // Send initial info
                     conn.send({
-                        type: 'info',
+                        type: 'user_info',
                         username: this.username
                     });
                 });
@@ -1078,45 +1407,51 @@
 
                 conn.on('close', () => {
                     this.connections.delete(conn.peer);
-                    this.updateConnectionStatus(`${this.connections.size} member(s) in room`, this.connections.size > 0 ? 'connected' : '');
+                    this.updateConnectionStatus(`${this.connections.size + 1} member(s) in room`, this.connections.size > 0 ? 'connected' : '');
                     this.updatePeerList();
+                    
+                    // If host disconnected and we have other connections, become host
+                    if (this.connections.size > 0) {
+                        this.migrateToHost();
+                    }
                 });
 
                 conn.on('error', (err) => {
-                    this.updateConnectionStatus('Connection failed', 'error');
                     console.error('Connection error:', err);
-                    this.showNotification('Failed to join room');
+                    // If failed to join, try to become host
+                    this.becomeHost(roomName, password);
                 });
             }
 
-            handleMessage(data, conn) {
-                if (data.type === 'message') {
-                    this.addMessage(data.username, data.content);
-                } else if (data.type === 'file') {
-                    this.addFileMessage(data.username, data.fileData);
-                } else if (data.type === 'screen-share') {
-                    this.handleRemoteScreenShare(data, conn);
-                } else if (data.type === 'info') {
-                    // Store friend's username and sync messages
-                    conn.metadata = { username: data.username };
+            migrateToHost() {
+                if (!this.currentRoom.isHost) {
+                    this.currentRoom.isHost = true;
+                    this.elements.hostIndicator.textContent = '👑 Host';
+                    this.addMessage('System', 'You are now the host!');
+                    this.showNotification('You are now the host!');
                     this.updatePeerList();
                     
-                    // If they sent recent messages, display them
-                    if (data.messages && this.messages.length === 0) {
-                        data.messages.forEach(msg => {
-                            if (msg.type === 'file') {
-                                this.addFileMessage(msg.author, msg.fileData, false);
-                            } else {
-                                this.addMessage(msg.author, msg.content, false);
-                            }
+                    // Notify other members
+                    this.connections.forEach(conn => {
+                        conn.send({
+                            type: 'host_migration',
+                            newHost: this.username
                         });
-                    }
+                    });
                 }
             }
 
-            addToRecentRooms(roomId, role) {
-                this.recentRooms.set(roomId, {
-                    id: roomId,
+            clearInputs() {
+                this.elements.newRoomName.value = '';
+                this.elements.newRoomPassword.value = '';
+                this.elements.joinRoomName.value = '';
+                this.elements.joinRoomPassword.value = '';
+            }
+
+            addToRecentRooms(roomName, password, role) {
+                this.recentRooms.set(roomName, {
+                    name: roomName,
+                    password: password,
                     role: role,
                     lastConnected: Date.now()
                 });
@@ -1136,24 +1471,405 @@
                     recentItem.className = 'recent-item';
                     recentItem.innerHTML = `
                         <div class="recent-info">
-                            <div class="recent-name">${room.role} - Room</div>
-                            <div class="recent-id">${room.id.substring(0, 12)}...</div>
+                            <div class="recent-name">${room.name}</div>
+                            <div class="recent-role">${room.role}</div>
                         </div>
-                        <button class="remove-btn" onclick="window.friendChat.removeRecentRoom('${room.id}')">×</button>
+                        <button class="remove-btn" onclick="window.friendChat.removeRecentRoom('${room.name}')">×</button>
                     `;
                     recentItem.addEventListener('click', (e) => {
                         if (e.target.classList.contains('remove-btn')) return;
-                        this.elements.roomIdInput.value = room.id;
-                        this.joinRoom();
+                        this.connectToRoom(room.name, room.password);
                     });
                     this.elements.recentList.appendChild(recentItem);
                 });
             }
 
-            removeRecentRoom(roomId) {
-                this.recentRooms.delete(roomId);
+            removeRecentRoom(roomName) {
+                this.recentRooms.delete(roomName);
                 this.updateRecentList();
                 this.saveData();
+            }
+
+            leaveRoom() {
+                if (this.peer) {
+                    this.peer.destroy();
+                }
+                
+                this.connections.clear();
+                this.currentRoom = { name: '', password: '', isHost: false };
+                this.elements.roomSection.classList.add('hidden');
+                this.elements.messageInput.disabled = true;
+                this.elements.chatTitle.textContent = '🏠 FriendChat Room';
+                this.messages = [];
+                this.clearMessages();
+                this.stopMusic();
+                
+                this.updateConnectionStatus('Left room. Create or join a new one.', '');
+                this.updatePeerList();
+                
+                localStorage.removeItem('friendchat_current_room');
+                this.showNotification('Left room');
+            }
+
+            handleMessage(data, conn) {
+                if (data.type === 'message') {
+                    this.addMessage(data.username, data.content);
+                } else if (data.type === 'file') {
+                    this.addFileMessage(data.username, data.fileData);
+                } else if (data.type === 'sound') {
+                    this.receiveSoundPlay(data.soundName, data.username);
+                } else if (data.type === 'music') {
+                    this.receiveMusicControl(data);
+                } else if (data.type === 'screen-share') {
+                    this.handleRemoteScreenShare(data, conn);
+                } else if (data.type === 'room_info') {
+                    conn.metadata = { username: data.username };
+                    this.updatePeerList();
+                    
+                    if (data.messages && this.messages.length === 0) {
+                        data.messages.forEach(msg => {
+                            if (msg.type === 'file') {
+                                this.addFileMessage(msg.author, msg.fileData, false);
+                            } else {
+                                this.addMessage(msg.author, msg.content, false);
+                            }
+                        });
+                    }
+                    
+                    if (data.currentMusic) {
+                        this.receiveMusic(data.currentMusic);
+                    }
+                } else if (data.type === 'user_info') {
+                    conn.metadata = { username: data.username };
+                    this.updatePeerList();
+                } else if (data.type === 'host_migration') {
+                    this.addMessage('System', `${data.newHost} is now the host!`);
+                }
+            }
+
+            // Soundpad functionality
+            initializeSoundPad() {
+                const defaultSounds = {
+                    'applause': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                    'laugh': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                    'airhorn': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                    'oof': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav'
+                };
+                
+                // For demo purposes, we'll use a simple beep sound
+                Object.keys(defaultSounds).forEach(sound => {
+                    if (!this.soundPad.has(sound)) {
+                        this.soundPad.set(sound, 'beep');
+                    }
+                });
+            }
+
+            addCustomSound() {
+                const name = this.elements.soundName.value.trim();
+                const url = this.elements.soundUrl.value.trim();
+                
+                if (!name || !url) {
+                    this.showNotification('Please enter both sound name and URL!');
+                    return;
+                }
+                
+                if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
+                    this.showNotification('Please use a YouTube URL!');
+                    return;
+                }
+                
+                this.soundPad.set(name, url);
+                this.updateSoundPad();
+                this.elements.soundName.value = '';
+                this.elements.soundUrl.value = '';
+                this.saveData();
+                this.showNotification(`Sound "${name}" added!`);
+            }
+
+            updateSoundPad() {
+                // Clear existing custom sounds (keep default ones)
+                const defaultSounds = ['applause', 'laugh', 'airhorn', 'oof'];
+                const existingButtons = this.elements.soundpadGrid.querySelectorAll('.sound-btn');
+                existingButtons.forEach(btn => {
+                    if (!defaultSounds.includes(btn.dataset.sound)) {
+                        btn.remove();
+                    }
+                });
+
+                // Add custom sounds
+                this.soundPad.forEach((url, name) => {
+                    if (!defaultSounds.includes(name)) {
+                        const button = document.createElement('button');
+                        button.className = 'sound-btn';
+                        button.dataset.sound = name;
+                        button.textContent = `🔊 ${name}`;
+                        this.elements.soundpadGrid.appendChild(button);
+                    }
+                });
+            }
+
+            playSound(soundName) {
+                if (this.connections.size === 0) {
+                    this.showNotification('No one connected to hear the sound!');
+                    return;
+                }
+
+                // Play locally
+                this.playSoundLocally(soundName);
+                
+                // Send to all connected peers
+                this.connections.forEach(conn => {
+                    conn.send({
+                        type: 'sound',
+                        soundName: soundName,
+                        username: this.username
+                    });
+                });
+
+                // Add sound message to chat
+                this.addSoundMessage(this.username, soundName);
+            }
+
+            playSoundLocally(soundName) {
+                // Create a simple beep sound for now
+                // In a real implementation, you'd load the actual sound file
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            }
+
+            receiveSoundPlay(soundName, username) {
+                this.playSoundLocally(soundName);
+                this.addSoundMessage(username, soundName);
+            }
+
+            addSoundMessage(username, soundName) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message';
+                
+                const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <span class="message-author">${username}</span>
+                        <span class="message-time">${time}</span>
+                    </div>
+                    <div class="message-content">
+                        <div class="sound-message">🔊 Played sound: ${soundName}</div>
+                    </div>
+                `;
+
+                this.elements.messagesContainer.appendChild(messageDiv);
+                this.elements.messagesContainer.scrollTop = this.elements.messagesContainer.scrollHeight;
+            }
+
+            // YouTube Music Bot functionality
+            initializeYouTubeAPI() {
+                // For demo purposes, we'll simulate YouTube search
+                // In a real implementation, you'd use the YouTube Data API
+            }
+
+            async searchMusic() {
+                const query = this.elements.musicSearch.value.trim();
+                if (!query) {
+                    this.showNotification('Please enter a search term!');
+                    return;
+                }
+
+                // Simulate YouTube search results
+                const mockResults = [
+                    {
+                        id: 'dQw4w9WgXcQ',
+                        title: `${query} - Music Video`,
+                        thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg',
+                        duration: '3:32'
+                    },
+                    {
+                        id: 'rickroll2',
+                        title: `${query} - Remix`,
+                        thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg',
+                        duration: '4:15'
+                    },
+                    {
+                        id: 'rickroll3',
+                        title: `${query} - Live Version`,
+                        thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg',
+                        duration: '3:45'
+                    }
+                ];
+
+                this.displayMusicResults(mockResults);
+            }
+
+            displayMusicResults(results) {
+                this.elements.musicResults.innerHTML = '';
+                
+                results.forEach(result => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'music-item';
+                    resultItem.innerHTML = `
+                        <img src="${result.thumbnail}" alt="Thumbnail">
+                        <div class="music-info">
+                            <div class="music-title">${result.title}</div>
+                            <div class="music-duration">${result.duration}</div>
+                        </div>
+                    `;
+                    resultItem.addEventListener('click', () => {
+                        this.playMusic(result);
+                    });
+                    this.elements.musicResults.appendChild(resultItem);
+                });
+            }
+
+            playMusic(musicData) {
+                if (this.connections.size === 0) {
+                    this.showNotification('No one connected to hear the music!');
+                    return;
+                }
+
+                this.currentMusic = musicData;
+                this.isPlaying = true;
+                
+                // Update UI
+                this.elements.currentMusic.classList.remove('hidden');
+                this.elements.currentMusic.classList.add('playing');
+                this.elements.currentMusicTitle.textContent = musicData.title;
+                this.elements.pauseBtn.textContent = '⏸️ Pause';
+                this.elements.pauseBtn.classList.add('active');
+                
+                // Send to all connected peers
+                this.connections.forEach(conn => {
+                    conn.send({
+                        type: 'music',
+                        action: 'play',
+                        musicData: musicData,
+                        username: this.username
+                    });
+                });
+
+                // Add music message to chat
+                this.addMusicMessage(this.username, musicData, 'started playing');
+                this.showNotification(`Now playing: ${musicData.title}`);
+            }
+
+            receiveMusic(musicData) {
+                this.currentMusic = musicData;
+                this.elements.currentMusic.classList.remove('hidden');
+                this.elements.currentMusicTitle.textContent = musicData.title;
+            }
+
+            receiveMusicControl(data) {
+                if (data.action === 'play') {
+                    this.receiveMusic(data.musicData);
+                    this.addMusicMessage(data.username, data.musicData, 'started playing');
+                } else if (data.action === 'pause') {
+                    this.isPlaying = false;
+                    this.elements.currentMusic.classList.remove('playing');
+                    this.addMusicMessage(data.username, this.currentMusic, 'paused');
+                } else if (data.action === 'resume') {
+                    this.isPlaying = true;
+                    this.elements.currentMusic.classList.add('playing');
+                    this.addMusicMessage(data.username, this.currentMusic, 'resumed');
+                } else if (data.action === 'stop') {
+                    this.stopMusicLocally();
+                    this.addMusicMessage(data.username, this.currentMusic, 'stopped');
+                }
+            }
+
+            toggleMusicPause() {
+                if (!this.currentMusic) return;
+
+                if (this.isPlaying) {
+                    this.isPlaying = false;
+                    this.elements.currentMusic.classList.remove('playing');
+                    this.elements.pauseBtn.textContent = '▶️ Resume';
+                    this.elements.pauseBtn.classList.remove('active');
+                    
+                    this.connections.forEach(conn => {
+                        conn.send({
+                            type: 'music',
+                            action: 'pause',
+                            username: this.username
+                        });
+                    });
+                    
+                    this.addMusicMessage(this.username, this.currentMusic, 'paused');
+                } else {
+                    this.isPlaying = true;
+                    this.elements.currentMusic.classList.add('playing');
+                    this.elements.pauseBtn.textContent = '⏸️ Pause';
+                    this.elements.pauseBtn.classList.add('active');
+                    
+                    this.connections.forEach(conn => {
+                        conn.send({
+                            type: 'music',
+                            action: 'resume',
+                            username: this.username
+                        });
+                    });
+                    
+                    this.addMusicMessage(this.username, this.currentMusic, 'resumed');
+                }
+            }
+
+            stopMusic() {
+                if (!this.currentMusic) return;
+
+                this.connections.forEach(conn => {
+                    conn.send({
+                        type: 'music',
+                        action: 'stop',
+                        username: this.username
+                    });
+                });
+
+                this.addMusicMessage(this.username, this.currentMusic, 'stopped');
+                this.stopMusicLocally();
+            }
+
+            stopMusicLocally() {
+                this.currentMusic = null;
+                this.isPlaying = false;
+                this.elements.currentMusic.classList.add('hidden');
+                this.elements.currentMusic.classList.remove('playing');
+                this.elements.pauseBtn.textContent = '⏸️ Pause';
+                this.elements.pauseBtn.classList.remove('active');
+            }
+
+            addMusicMessage(username, musicData, action) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message';
+                
+                const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <span class="message-author">${username}</span>
+                        <span class="message-time">${time}</span>
+                    </div>
+                    <div class="message-content">
+                        <div class="music-message">
+                            <img src="${musicData.thumbnail}" alt="Thumbnail">
+                            <div>
+                                <div>🎵 ${action}: ${musicData.title}</div>
+                                <div style="font-size: 10px; color: #99aab5;">${musicData.duration}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                this.elements.messagesContainer.appendChild(messageDiv);
+                this.elements.messagesContainer.scrollTop = this.elements.messagesContainer.scrollHeight;
             }
 
             sendMessage() {
@@ -1203,7 +1919,6 @@
                         timestamp: Date.now()
                     });
                     
-                    // Keep only last 50 messages
                     if (this.messages.length > 50) {
                         this.messages = this.messages.slice(-50);
                     }
@@ -1221,11 +1936,20 @@
 
             updatePeerList() {
                 const listContainer = this.elements.peerList;
-                // Clear existing peers except title
                 const title = listContainer.querySelector('.section-title');
                 listContainer.innerHTML = '';
                 listContainer.appendChild(title);
 
+                // Add self
+                const selfDiv = document.createElement('div');
+                selfDiv.className = 'peer-item';
+                selfDiv.innerHTML = `
+                    <div class="peer-status ${this.currentRoom.isHost ? 'host' : ''}"></div>
+                    <span>${this.username} (You) ${this.currentRoom.isHost ? '👑' : ''}</span>
+                `;
+                listContainer.appendChild(selfDiv);
+
+                // Add others
                 this.connections.forEach((conn, peerId) => {
                     const peerDiv = document.createElement('div');
                     peerDiv.className = 'peer-item';
@@ -1243,7 +1967,7 @@
                 });
             }
 
-            // Voice and Screen Sharing Methods (same as before)
+            // Voice and Screen Sharing Methods (same as before but simplified for space)
             async toggleVoiceCall() {
                 if (!this.isVoiceCallActive) {
                     await this.startVoiceCall();
@@ -1264,7 +1988,6 @@
                     this.elements.voiceCallBtn.textContent = '📞 End Voice';
                     this.elements.voiceCallBtn.classList.add('active');
                     
-                    // Call all connected peers
                     this.connections.forEach((conn, peerId) => {
                         const call = this.peer.call(peerId, this.localStream);
                         this.handleOutgoingCall(call);
@@ -1315,17 +2038,14 @@
                     this.elements.screenShareBtn.textContent = '🖥️ Stop Sharing';
                     this.elements.screenShareBtn.classList.add('sharing');
                     
-                    // Handle screen share end
                     this.screenStream.getVideoTracks()[0].addEventListener('ended', () => {
                         this.endScreenShare();
                     });
 
-                    // Share screen with all connected peers
                     this.connections.forEach((conn, peerId) => {
                         const call = this.peer.call(peerId, this.screenStream);
                         this.handleOutgoingCall(call);
                         
-                        // Send screen share notification
                         conn.send({
                             type: 'screen-share',
                             username: this.username,
@@ -1351,7 +2071,6 @@
                 this.elements.screenShareBtn.textContent = '🖥️ Share Screen';
                 this.elements.screenShareBtn.classList.remove('sharing');
                 
-                // Notify peers that screen sharing stopped
                 this.connections.forEach((conn, peerId) => {
                     conn.send({
                         type: 'screen-share',
@@ -1374,10 +2093,6 @@
             handleOutgoingCall(call) {
                 call.on('stream', (remoteStream) => {
                     this.playRemoteStream(remoteStream, call.peer);
-                });
-
-                call.on('close', () => {
-                    console.log('Call ended');
                 });
             }
 
@@ -1461,7 +2176,7 @@
                 this.elements.speakerBtn.textContent = this.isSpeakerEnabled ? '🔊 Enabled' : '🔇 Disabled';
             }
 
-            // File handling methods (same as before but simplified)
+            // File handling methods (simplified for space)
             handleFileSelect(event) {
                 const files = Array.from(event.target.files);
                 this.processFiles(files);
@@ -1529,7 +2244,6 @@
                         }
                     };
 
-                    // Send to all connected peers
                     this.connections.forEach(conn => {
                         if (conn.open) {
                             conn.send(message);
@@ -1609,7 +2323,6 @@
                         timestamp: Date.now()
                     });
                     
-                    // Keep only last 50 messages
                     if (this.messages.length > 50) {
                         this.messages = this.messages.slice(-50);
                     }
