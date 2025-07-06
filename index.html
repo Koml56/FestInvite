@@ -3,603 +3,805 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FestBurger - Exclusive Tasting Experience</title>
+    <title>FriendChat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.4.7/peerjs.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap');
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Source Sans Pro', sans-serif;
-            line-height: 1.6;
-            color: #ffffff;
-            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        .floating-particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-        
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: linear-gradient(45deg, #ff6b35, #ff8c42);
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-            opacity: 0.6;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.6; }
-            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
-        }
-        
-        .opening-section {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c2f33 0%, #23272a 100%);
+            color: #dcddde;
             height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: linear-gradient(180deg, #2f3136 0%, #36393f 100%);
+            border-right: 1px solid #40444b;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .server-header {
+            padding: 16px;
+            border-bottom: 1px solid #40444b;
+            font-weight: 600;
+            background: rgba(114, 137, 218, 0.1);
+            text-align: center;
+        }
+
+        .user-section {
+            margin-top: auto;
+            padding: 8px;
+            background: #292b2f;
+            border-top: 1px solid #40444b;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-radius: 4px;
+            background: rgba(79, 84, 92, 0.32);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #7289da, #99aab5);
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 0;
+            font-weight: bold;
+            margin-right: 8px;
         }
-        
+
+        .connection-section {
+            padding: 16px;
+            flex: 1;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #8e9297;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 8px 12px;
+            background: #40444b;
+            border: 1px solid #72767d;
+            border-radius: 4px;
+            color: #dcddde;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #7289da;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #7289da, #677bc4);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #677bc4, #5b6bb0);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #43b581, #3ca374);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(45deg, #3ca374, #359268);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #f04747, #d73c3c);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(45deg, #d73c3c, #c23636);
+        }
+
         .main-content {
-            margin-top: 0;
-            position: relative;
-            z-index: 2;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+
+        .chat-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #40444b;
+            background: #36393f;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        
-        .greeting-text {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
+
+        .chat-title {
+            font-size: 16px;
             font-weight: 600;
             color: #ffffff;
-            max-width: 900px;
-            line-height: 1.4;
-            text-shadow: 
-                0 0 20px rgba(255, 107, 53, 0.6),
-                0 0 40px rgba(255, 107, 53, 0.4),
-                0 0 60px rgba(255, 107, 53, 0.2),
-                0 20px 40px rgba(0, 0, 0, 0.8);
-            animation: shadowPulse 4s ease-in-out infinite, textFloat 6s ease-in-out infinite;
-            position: relative;
-            z-index: 3;
-            margin-top: -150px;
         }
-        
-        .greeting-text::before {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            color: rgba(255, 107, 53, 0.3);
-            text-shadow: none;
-            transform: translateZ(-50px) scale(1.1);
-            z-index: -1;
-            animation: shadowMove 3s ease-in-out infinite;
+
+        .voice-controls {
+            display: flex;
+            gap: 8px;
         }
-        
-        @keyframes shadowPulse {
-            0%, 100% { 
-                text-shadow: 
-                    0 0 20px rgba(255, 107, 53, 0.6),
-                    0 0 40px rgba(255, 107, 53, 0.4),
-                    0 0 60px rgba(255, 107, 53, 0.2),
-                    0 20px 40px rgba(0, 0, 0, 0.8);
-            }
-            50% { 
-                text-shadow: 
-                    0 0 30px rgba(255, 107, 53, 0.8),
-                    0 0 60px rgba(255, 107, 53, 0.6),
-                    0 0 90px rgba(255, 107, 53, 0.4),
-                    0 30px 60px rgba(0, 0, 0, 1);
-            }
+
+        .voice-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            background: #4f545c;
+            color: #dcddde;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
         }
-        
-        @keyframes textFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+
+        .voice-btn:hover {
+            background: #5d6269;
         }
-        
-        @keyframes shadowMove {
-            0%, 100% { transform: translateZ(-50px) scale(1.1) translateY(0px); }
-            50% { transform: translateZ(-50px) scale(1.1) translateY(20px); }
+
+        .voice-btn.active {
+            background: #43b581;
+            color: white;
         }
-        
-        .scroll-indicator {
-            position: absolute;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #ff6b35;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            animation: bounce 2s infinite;
+
+        .voice-btn.muted {
+            background: #f04747;
+            color: white;
         }
-        
-        .scroll-indicator::after {
-            content: '↓';
-            display: block;
-            font-size: 1.5rem;
-            margin-top: 10px;
-            animation: bounce 2s infinite 0.1s;
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px;
+            background: #36393f;
         }
-        
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
+
+        .message {
+            margin-bottom: 16px;
+            animation: messageSlide 0.3s ease-out;
         }
-        
-        .hero {
-            text-align: center;
-            padding: 100px 0 300px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 4rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 50%, #ff6b35 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 20px;
-            animation: glow 3s ease-in-out infinite;
-            letter-spacing: 2px;
-        }
-        
-        @keyframes glow {
-            0%, 100% { text-shadow: 0 0 20px rgba(255, 107, 53, 0.5); }
-            50% { text-shadow: 0 0 40px rgba(255, 107, 53, 0.8); }
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            color: #ff6b35;
-            margin-bottom: 40px;
-            font-weight: 300;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-        
-        .intro-text {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            line-height: 1.8;
-            max-width: 800px;
-            margin: 0 auto 60px;
-            color: #ffffff;
-            font-style: italic;
-            opacity: 0;
-            animation: fadeInUp 1.5s ease forwards 0.5s;
-        }
-        
-        @keyframes fadeInUp {
+
+        @keyframes messageSlide {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(10px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
-        .experience-section {
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 107, 53, 0.2);
-            border-radius: 20px;
-            padding: 60px 40px;
-            margin: 400px 0 80px 0;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .experience-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
-            animation: shimmer 3s infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-        
-        .section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            color: #ff6b35;
-            text-align: center;
-            margin-bottom: 40px;
-            position: relative;
-        }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #ff6b35, transparent);
-        }
-        
-        .course-steps {
-            display: grid;
-            gap: 40px;
-            margin: 50px 0;
-        }
-        
-        .step {
+
+        .message-header {
             display: flex;
-            align-items: flex-start;
-            gap: 30px;
-            padding: 30px;
-            background: rgba(255, 107, 53, 0.05);
-            border-radius: 15px;
-            transition: all 0.3s ease;
-            opacity: 0;
-            animation: slideInLeft 1s ease forwards;
+            align-items: center;
+            margin-bottom: 4px;
         }
-        
-        .step:nth-child(1) { animation-delay: 0.2s; }
-        .step:nth-child(2) { animation-delay: 0.4s; }
-        .step:nth-child(3) { animation-delay: 0.6s; }
-        .step:nth-child(4) { animation-delay: 0.8s; }
-        
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        .step:hover {
-            transform: translateX(10px);
-            background: rgba(255, 107, 53, 0.1);
-        }
-        
-        .step-number {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 700;
-            color: #ff6b35;
-            min-width: 50px;
-        }
-        
-        .step-content h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3rem;
-            color: #ff6b35;
-            margin-bottom: 10px;
-        }
-        
-        .step-content p {
+
+        .message-author {
+            font-weight: 600;
             color: #ffffff;
-            line-height: 1.6;
+            margin-right: 8px;
         }
-        
-        .brand {
-            color: #ff6b35;
-            font-weight: 600;
+
+        .message-time {
+            font-size: 12px;
+            color: #72767d;
         }
-        
-        .reservation-section {
-            text-align: center;
-            padding: 80px 0;
-            position: relative;
+
+        .message-content {
+            color: #dcddde;
+            line-height: 1.4;
+            word-wrap: break-word;
         }
-        
-        .reservation-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            color: #ff6b35;
-            margin-bottom: 30px;
+
+        .message-input-container {
+            padding: 20px;
+            background: #40444b;
+            border-top: 1px solid #40444b;
         }
-        
-        .hosts {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin: 40px 0;
-            flex-wrap: wrap;
-        }
-        
-        .host {
-            background: rgba(255, 107, 53, 0.1);
-            padding: 20px 30px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 107, 53, 0.3);
-            font-size: 1.2rem;
-            color: #ff6b35;
-            font-weight: 600;
-        }
-        
-        .reserve-btn {
-            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 50%, #ff6b35 100%);
-            color: #000000;
-            border: none;
-            padding: 18px 50px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 30px 0;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .reserve-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
+
+        .message-input {
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s;
+            padding: 12px 16px;
+            background: #484c52;
+            border: none;
+            border-radius: 8px;
+            color: #dcddde;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            transition: background-color 0.2s ease;
         }
-        
-        .reserve-btn:hover::before {
-            left: 100%;
+
+        .message-input:focus {
+            background: #40444b;
         }
-        
-        .reserve-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+
+        .message-input::placeholder {
+            color: #72767d;
         }
-        
-        .contact-info {
+
+        .connection-status {
+            padding: 8px 16px;
+            text-align: center;
+            font-size: 12px;
+            background: #2f3136;
+            color: #99aab5;
+        }
+
+        .status-connected {
+            background: #43b581;
+            color: white;
+        }
+
+        .status-connecting {
+            background: #faa61a;
+            color: white;
+        }
+
+        .status-error {
+            background: #f04747;
+            color: white;
+        }
+
+        .peer-list {
+            margin-top: 16px;
+        }
+
+        .peer-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            background: rgba(79, 84, 92, 0.2);
+            transition: background-color 0.2s ease;
+        }
+
+        .peer-item:hover {
+            background: rgba(79, 84, 92, 0.4);
+        }
+
+        .peer-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #43b581;
+            margin-right: 8px;
+        }
+
+        .peer-status.voice {
+            background: #7289da;
+        }
+
+        .hidden {
             display: none;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 107, 53, 0.3);
-            border-radius: 20px;
-            padding: 40px;
-            margin-top: 30px;
-            animation: fadeInScale 0.5s ease forwards;
         }
-        
-        @keyframes fadeInScale {
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 16px;
+            background: #7289da;
+            color: white;
+            border-radius: 4px;
+            animation: slideIn 0.3s ease-out;
+            z-index: 1000;
+        }
+
+        @keyframes slideIn {
             from {
+                transform: translateX(100%);
                 opacity: 0;
-                transform: scale(0.9);
             }
             to {
+                transform: translateX(0);
                 opacity: 1;
-                transform: scale(1);
-            }
-        }
-        
-        .contact-info h3 {
-            font-family: 'Playfair Display', serif;
-            color: #ff6b35;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-        }
-        
-        .contact-info p {
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-        }
-        
-        .welcome-text {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            color: #ff6b35;
-            margin-top: 20px;
-        }
-        
-        @media (max-width: 768px) {
-            .greeting-text {
-                font-size: 2rem;
-                padding: 0 20px;
-                margin-top: -100px;
-            }
-            
-            .logo {
-                font-size: 2.5rem;
-            }
-            
-            .intro-text {
-                font-size: 1.2rem;
-                padding: 0 20px;
-            }
-            
-            .experience-section {
-                padding: 40px 20px;
-            }
-            
-            .step {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .hosts {
-                flex-direction: column;
-                align-items: center;
             }
         }
     </style>
 </head>
 <body>
-    <div class="floating-particles" id="particles"></div>
-    
-    <div class="opening-section">
-        <div class="container">
-            <h1 class="greeting-text" data-text="Dear Ebi and Bmies, you have been cordially invited to an exclusive private degustation, crafted by Chef Oleksii">
-                Dear Ebi and Bmies, you have been cordially invited to an exclusive private degustation, crafted by Chef Oleksii
-            </h1>
-            <div class="scroll-indicator">Begin the journey</div>
-        </div>
-    </div>
-    
-    <div class="main-content">
-        <div class="container">
-            <div class="hero">
-                <h1 class="logo">FestBurger</h1>
-                <p class="subtitle">An Intimate Culinary Experience</p>
-                <p class="intro-text">
-                    This is not just a burger — this is a story of quality, craftsmanship, and the journey from farm to plate. Each ingredient has been carefully selected to showcase the finest Nordic flavors and sustainable practices.
-                </p>
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="server-header">
+                <h3>🎮 FriendChat</h3>
             </div>
             
-            <div class="experience-section">
-                <h2 class="section-title">A Culinary Voyage</h2>
+            <div class="connection-section">
+                <div class="section-title">Connection</div>
+                <div class="input-group">
+                    <input type="text" id="usernameInput" placeholder="Your username" maxlength="20">
+                </div>
+                <button class="btn btn-primary" id="generateIdBtn">Generate My ID</button>
                 
-                <div class="course-steps">
-                    <div class="step">
-                        <div class="step-number">🍷</div>
-                        <div class="step-content">
-                            <h3>Welcome Reception</h3>
-                            <p>Begin with a glass of <span class="brand">Karelian Cellars</span> Finnish organic wine, paired with artisanal croutons made from our house-made brioche, topped with <span class="brand">Nordström Farm</span> aged cheese and local <span class="brand">Lakeland Berry</span> preserve.</p>
-                        </div>
+                <div id="userIdSection" class="hidden">
+                    <div class="section-title">Your ID</div>
+                    <div class="input-group">
+                        <input type="text" id="userIdDisplay" readonly>
                     </div>
-                    
-                    <div class="step">
-                        <div class="step-number">🥩</div>
-                        <div class="step-content">
-                            <h3>The Meat Story</h3>
-                            <p>Discover the story of our premium beef from <span class="brand">Kanta-Häme Organic Ranch</span>. Meet the farmers through our presentation while we hand-form the patty using our precision press, showcasing the ethical conditions and sustainable practices that define our sourcing.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-number">👨‍🍳</div>
-                        <div class="step-content">
-                            <h3>Artisan Condiments</h3>
-                            <p>Experience our signature herb-infused mayonnaise, made fresh with <span class="brand">Lakeshore Poultry</span> free-range egg yolks and our house-made herb oil. Each guest will taste the difference that local, premium ingredients make.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-number">🍔</div>
-                        <div class="step-content">
-                            <h3>The Final Assembly</h3>
-                            <p>Watch as we assemble your burger with <span class="brand">Tampere Artisan Bakery</span> brioche buns, <span class="brand">Greenhouse Nordic</span> organic lettuce, and <span class="brand">Saimaa Dairy</span> artisan cheese, creating a masterpiece that redefines fast food excellence.</p>
-                        </div>
-                    </div>
+                    <button class="btn btn-primary" id="copyIdBtn">Copy ID</button>
+                </div>
+
+                <div class="section-title">Connect to Friend</div>
+                <div class="input-group">
+                    <input type="text" id="friendIdInput" placeholder="Friend's ID">
+                </div>
+                <button class="btn btn-success" id="connectBtn">Connect</button>
+
+                <div class="peer-list" id="peerList">
+                    <div class="section-title">Connected Friends</div>
                 </div>
             </div>
-            
-            <div class="reservation-section">
-                <h2 class="reservation-title">Secure Your Place at the Table</h2>
-                <p style="font-size: 1.2rem; margin-bottom: 30px;">This intimate evening has been curated exclusively for</p>
-                
-                <div class="hosts">
-                    <div class="host">Ebi</div>
-                    <div class="host">Bmies</div>
-                </div>
-                
-                <button class="reserve-btn" onclick="showContactInfo()">Accept This Invitation</button>
-                
-                <div class="contact-info" id="contactInfo">
-                    <h3>Reservation Details</h3>
-                    <p><strong>Your Host:</strong> Oleksii</p>
-                    <p><strong>To confirm your attendance:</strong> Please connect directly for scheduling</p>
-                    <p class="welcome-text">Welcome to an exclusive culinary experience that will redefine your understanding of premium dining.</p>
+
+            <div class="user-section">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">?</div>
+                    <div>
+                        <div id="currentUsername">Set username</div>
+                        <div style="font-size: 12px; color: #99aab5;">Online</div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="main-content">
+            <div class="chat-header">
+                <div class="chat-title"># general</div>
+                <div class="voice-controls">
+                    <button class="voice-btn" id="micBtn">🎤 Unmuted</button>
+                    <button class="voice-btn" id="speakerBtn">🔊 Enabled</button>
+                    <button class="voice-btn" id="voiceCallBtn">📞 Start Voice</button>
+                </div>
+            </div>
+
+            <div class="connection-status" id="connectionStatus">
+                Not connected - Generate your ID and share with friends
+            </div>
+
+            <div class="messages-container" id="messagesContainer">
+                <div class="message">
+                    <div class="message-header">
+                        <span class="message-author">FriendChat Bot</span>
+                        <span class="message-time">now</span>
+                    </div>
+                    <div class="message-content">
+                        Welcome to FriendChat! 🎉<br>
+                        1. Set your username<br>
+                        2. Click "Generate My ID" and share it with friends<br>
+                        3. Enter your friend's ID to connect<br>
+                        4. Start chatting and voice calling!
+                    </div>
+                </div>
+            </div>
+
+            <div class="message-input-container">
+                <textarea 
+                    class="message-input" 
+                    id="messageInput" 
+                    placeholder="Type a message..." 
+                    rows="1"
+                    disabled
+                ></textarea>
+            </div>
+        </div>
     </div>
-    
+
     <script>
-        function createParticles() {
-            const container = document.getElementById('particles');
-            const particleCount = 50;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 6 + 's';
-                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
-                container.appendChild(particle);
+        class FriendChat {
+            constructor() {
+                this.peer = null;
+                this.connections = new Map();
+                this.username = '';
+                this.isVoiceCallActive = false;
+                this.isMuted = false;
+                this.isSpeakerEnabled = true;
+                this.localStream = null;
+                
+                this.initializeElements();
+                this.attachEventListeners();
             }
-        }
-        
-        function showContactInfo() {
-            const contactInfo = document.getElementById('contactInfo');
-            contactInfo.style.display = 'block';
-            
-            contactInfo.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            });
-        }
-        
-        window.addEventListener('load', createParticles);
-        
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const parallax = document.querySelector('.hero');
-            const speed = scrolled * 0.5;
-            parallax.style.transform = `translateY(${speed}px)`;
-            
-            const heroContent = document.querySelector('.hero');
-            const experienceSection = document.querySelector('.experience-section');
-            
-            if (heroContent && experienceSection) {
-                const heroRect = heroContent.getBoundingClientRect();
-                const experienceRect = experienceSection.getBoundingClientRect();
+
+            initializeElements() {
+                this.elements = {
+                    usernameInput: document.getElementById('usernameInput'),
+                    generateIdBtn: document.getElementById('generateIdBtn'),
+                    userIdSection: document.getElementById('userIdSection'),
+                    userIdDisplay: document.getElementById('userIdDisplay'),
+                    copyIdBtn: document.getElementById('copyIdBtn'),
+                    friendIdInput: document.getElementById('friendIdInput'),
+                    connectBtn: document.getElementById('connectBtn'),
+                    messageInput: document.getElementById('messageInput'),
+                    messagesContainer: document.getElementById('messagesContainer'),
+                    connectionStatus: document.getElementById('connectionStatus'),
+                    currentUsername: document.getElementById('currentUsername'),
+                    userAvatar: document.getElementById('userAvatar'),
+                    peerList: document.getElementById('peerList'),
+                    micBtn: document.getElementById('micBtn'),
+                    speakerBtn: document.getElementById('speakerBtn'),
+                    voiceCallBtn: document.getElementById('voiceCallBtn')
+                };
+            }
+
+            attachEventListeners() {
+                this.elements.generateIdBtn.addEventListener('click', () => this.generateId());
+                this.elements.copyIdBtn.addEventListener('click', () => this.copyId());
+                this.elements.connectBtn.addEventListener('click', () => this.connectToFriend());
+                this.elements.messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.sendMessage();
+                    }
+                });
+                this.elements.usernameInput.addEventListener('input', () => this.updateUsername());
+                this.elements.micBtn.addEventListener('click', () => this.toggleMute());
+                this.elements.speakerBtn.addEventListener('click', () => this.toggleSpeaker());
+                this.elements.voiceCallBtn.addEventListener('click', () => this.toggleVoiceCall());
+            }
+
+            updateUsername() {
+                this.username = this.elements.usernameInput.value.trim() || 'Anonymous';
+                this.elements.currentUsername.textContent = this.username;
+                this.elements.userAvatar.textContent = this.username.charAt(0).toUpperCase();
+            }
+
+            async generateId() {
+                if (!this.username) {
+                    this.showNotification('Please set a username first!');
+                    return;
+                }
+
+                this.updateConnectionStatus('Generating ID...', 'connecting');
                 
-                const fadeStart = window.innerHeight * 0.7;
-                const fadeEnd = window.innerHeight * 0.3;
-                
-                if (experienceRect.top <= fadeStart && experienceRect.top > fadeEnd) {
-                    const fadeProgress = (fadeStart - experienceRect.top) / (fadeStart - fadeEnd);
-                    const opacity = Math.max(0, 1 - fadeProgress);
-                    heroContent.style.opacity = opacity;
-                } else if (experienceRect.top <= fadeEnd) {
-                    heroContent.style.opacity = 0;
-                } else {
-                    heroContent.style.opacity = 1;
+                try {
+                    this.peer = new Peer();
+                    
+                    this.peer.on('open', (id) => {
+                        this.elements.userIdDisplay.value = id;
+                        this.elements.userIdSection.classList.remove('hidden');
+                        this.elements.messageInput.disabled = false;
+                        this.updateConnectionStatus('Ready to connect! Share your ID with friends.', 'connected');
+                        this.showNotification('ID generated! Share it with friends.');
+                    });
+
+                    this.peer.on('connection', (conn) => {
+                        this.handleIncomingConnection(conn);
+                    });
+
+                    this.peer.on('call', (call) => {
+                        this.handleIncomingCall(call);
+                    });
+
+                    this.peer.on('error', (err) => {
+                        console.error('Peer error:', err);
+                        this.updateConnectionStatus('Error: ' + err.message, 'error');
+                    });
+
+                } catch (error) {
+                    this.updateConnectionStatus('Failed to generate ID', 'error');
+                    console.error('Error generating ID:', error);
                 }
             }
-        });
+
+            copyId() {
+                navigator.clipboard.writeText(this.elements.userIdDisplay.value);
+                this.showNotification('ID copied to clipboard!');
+            }
+
+            connectToFriend() {
+                const friendId = this.elements.friendIdInput.value.trim();
+                if (!friendId) {
+                    this.showNotification('Please enter a friend ID!');
+                    return;
+                }
+
+                if (!this.peer) {
+                    this.showNotification('Generate your ID first!');
+                    return;
+                }
+
+                this.updateConnectionStatus('Connecting to friend...', 'connecting');
+
+                const conn = this.peer.connect(friendId);
+                this.handleOutgoingConnection(conn);
+            }
+
+            handleIncomingConnection(conn) {
+                conn.on('open', () => {
+                    this.connections.set(conn.peer, conn);
+                    this.updateConnectionStatus(`Connected to ${this.connections.size} friend(s)`, 'connected');
+                    this.addMessage('System', `${conn.metadata?.username || 'Friend'} connected!`);
+                    this.updatePeerList();
+                    
+                    // Send initial info
+                    conn.send({
+                        type: 'info',
+                        username: this.username
+                    });
+                });
+
+                conn.on('data', (data) => {
+                    this.handleMessage(data, conn);
+                });
+
+                conn.on('close', () => {
+                    this.connections.delete(conn.peer);
+                    this.updateConnectionStatus(`Connected to ${this.connections.size} friend(s)`, this.connections.size > 0 ? 'connected' : '');
+                    this.updatePeerList();
+                });
+            }
+
+            handleOutgoingConnection(conn) {
+                conn.on('open', () => {
+                    this.connections.set(conn.peer, conn);
+                    this.updateConnectionStatus(`Connected to ${this.connections.size} friend(s)`, 'connected');
+                    this.addMessage('System', 'Connected to friend!');
+                    this.updatePeerList();
+                    this.elements.friendIdInput.value = '';
+                    
+                    // Send initial info
+                    conn.send({
+                        type: 'info',
+                        username: this.username
+                    });
+                });
+
+                conn.on('data', (data) => {
+                    this.handleMessage(data, conn);
+                });
+
+                conn.on('close', () => {
+                    this.connections.delete(conn.peer);
+                    this.updateConnectionStatus(`Connected to ${this.connections.size} friend(s)`, this.connections.size > 0 ? 'connected' : '');
+                    this.updatePeerList();
+                });
+
+                conn.on('error', (err) => {
+                    this.updateConnectionStatus('Connection failed', 'error');
+                    console.error('Connection error:', err);
+                });
+            }
+
+            handleMessage(data, conn) {
+                if (data.type === 'message') {
+                    this.addMessage(data.username, data.content);
+                } else if (data.type === 'info') {
+                    // Store friend's username
+                    conn.metadata = { username: data.username };
+                    this.updatePeerList();
+                }
+            }
+
+            sendMessage() {
+                const content = this.elements.messageInput.value.trim();
+                if (!content || this.connections.size === 0) return;
+
+                const message = {
+                    type: 'message',
+                    username: this.username,
+                    content: content,
+                    timestamp: Date.now()
+                };
+
+                // Send to all connected peers
+                this.connections.forEach(conn => {
+                    if (conn.open) {
+                        conn.send(message);
+                    }
+                });
+
+                this.addMessage(this.username, content);
+                this.elements.messageInput.value = '';
+            }
+
+            addMessage(author, content) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message';
+                
+                const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <span class="message-author">${author}</span>
+                        <span class="message-time">${time}</span>
+                    </div>
+                    <div class="message-content">${content}</div>
+                `;
+
+                this.elements.messagesContainer.appendChild(messageDiv);
+                this.elements.messagesContainer.scrollTop = this.elements.messagesContainer.scrollHeight;
+            }
+
+            updateConnectionStatus(message, status = '') {
+                this.elements.connectionStatus.textContent = message;
+                this.elements.connectionStatus.className = `connection-status ${status ? 'status-' + status : ''}`;
+            }
+
+            updatePeerList() {
+                const listContainer = this.elements.peerList;
+                // Clear existing peers except title
+                const title = listContainer.querySelector('.section-title');
+                listContainer.innerHTML = '';
+                listContainer.appendChild(title);
+
+                this.connections.forEach((conn, peerId) => {
+                    const peerDiv = document.createElement('div');
+                    peerDiv.className = 'peer-item';
+                    const username = conn.metadata?.username || 'Friend';
+                    peerDiv.innerHTML = `
+                        <div class="peer-status ${this.isVoiceCallActive ? 'voice' : ''}"></div>
+                        <span>${username}</span>
+                    `;
+                    listContainer.appendChild(peerDiv);
+                });
+            }
+
+            async toggleVoiceCall() {
+                if (!this.isVoiceCallActive) {
+                    await this.startVoiceCall();
+                } else {
+                    this.endVoiceCall();
+                }
+            }
+
+            async startVoiceCall() {
+                if (this.connections.size === 0) {
+                    this.showNotification('No friends connected for voice call!');
+                    return;
+                }
+
+                try {
+                    this.localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    this.isVoiceCallActive = true;
+                    this.elements.voiceCallBtn.textContent = '📞 End Voice';
+                    this.elements.voiceCallBtn.classList.add('active');
+                    
+                    // Call all connected peers
+                    this.connections.forEach((conn, peerId) => {
+                        const call = this.peer.call(peerId, this.localStream);
+                        this.handleOutgoingCall(call);
+                    });
+
+                    this.updatePeerList();
+                    this.showNotification('Voice call started!');
+                } catch (error) {
+                    console.error('Error starting voice call:', error);
+                    this.showNotification('Could not access microphone');
+                }
+            }
+
+            endVoiceCall() {
+                if (this.localStream) {
+                    this.localStream.getTracks().forEach(track => track.stop());
+                    this.localStream = null;
+                }
+                
+                this.isVoiceCallActive = false;
+                this.elements.voiceCallBtn.textContent = '📞 Start Voice';
+                this.elements.voiceCallBtn.classList.remove('active');
+                this.updatePeerList();
+                this.showNotification('Voice call ended');
+            }
+
+            handleIncomingCall(call) {
+                // Auto-accept incoming calls
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then((stream) => {
+                        call.answer(stream);
+                        this.localStream = stream;
+                        this.isVoiceCallActive = true;
+                        this.elements.voiceCallBtn.textContent = '📞 End Voice';
+                        this.elements.voiceCallBtn.classList.add('active');
+                        this.updatePeerList();
+                        
+                        call.on('stream', (remoteStream) => {
+                            this.playRemoteStream(remoteStream);
+                        });
+                    })
+                    .catch((err) => {
+                        console.error('Failed to answer call:', err);
+                        call.close();
+                    });
+            }
+
+            handleOutgoingCall(call) {
+                call.on('stream', (remoteStream) => {
+                    this.playRemoteStream(remoteStream);
+                });
+
+                call.on('close', () => {
+                    console.log('Call ended');
+                });
+            }
+
+            playRemoteStream(stream) {
+                const audio = document.createElement('audio');
+                audio.srcObject = stream;
+                audio.autoplay = true;
+                audio.volume = this.isSpeakerEnabled ? 1 : 0;
+                document.body.appendChild(audio);
+            }
+
+            toggleMute() {
+                this.isMuted = !this.isMuted;
+                if (this.localStream) {
+                    this.localStream.getAudioTracks().forEach(track => {
+                        track.enabled = !this.isMuted;
+                    });
+                }
+                this.elements.micBtn.textContent = this.isMuted ? '🎤 Muted' : '🎤 Unmuted';
+                this.elements.micBtn.classList.toggle('muted', this.isMuted);
+            }
+
+            toggleSpeaker() {
+                this.isSpeakerEnabled = !this.isSpeakerEnabled;
+                const audioElements = document.querySelectorAll('audio');
+                audioElements.forEach(audio => {
+                    audio.volume = this.isSpeakerEnabled ? 1 : 0;
+                });
+                this.elements.speakerBtn.textContent = this.isSpeakerEnabled ? '🔊 Enabled' : '🔇 Disabled';
+            }
+
+            showNotification(message) {
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.textContent = message;
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+        }
+
+        // Initialize the app
+        new FriendChat();
     </script>
-    </body>
+</body>
 </html>
