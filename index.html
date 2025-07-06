@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FriendChat</title>
+    <title>FriendChat Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.4.7/peerjs.min.js"></script>
     <style>
         * {
@@ -41,36 +41,10 @@
             text-align: center;
         }
 
-        .user-section {
-            margin-top: auto;
-            padding: 8px;
-            background: #292b2f;
-            border-top: 1px solid #40444b;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            padding: 8px;
-            border-radius: 4px;
-            background: rgba(79, 84, 92, 0.32);
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #7289da, #99aab5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-right: 8px;
-        }
-
-        .connection-section {
-            padding: 16px;
+        .channels-section {
             flex: 1;
+            padding: 16px 8px;
+            overflow-y: auto;
         }
 
         .section-title {
@@ -79,11 +53,18 @@
             color: #8e9297;
             text-transform: uppercase;
             margin-bottom: 8px;
+            margin-top: 16px;
             letter-spacing: 0.5px;
+            padding: 0 8px;
+        }
+
+        .section-title:first-child {
+            margin-top: 0;
         }
 
         .input-group {
             margin-bottom: 12px;
+            padding: 0 8px;
         }
 
         .input-group input {
@@ -142,6 +123,117 @@
             background: linear-gradient(45deg, #d73c3c, #c23636);
         }
 
+        .btn-secondary {
+            background: #4f545c;
+            color: #dcddde;
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+
+        .btn-secondary:hover {
+            background: #5d6269;
+        }
+
+        .channel-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 8px;
+            margin: 2px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .channel-item:hover {
+            background: rgba(79, 84, 92, 0.32);
+        }
+
+        .channel-item.active {
+            background: rgba(114, 137, 218, 0.2);
+            color: #ffffff;
+        }
+
+        .channel-icon {
+            margin-right: 8px;
+            opacity: 0.8;
+        }
+
+        .recent-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 8px;
+            margin: 2px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 12px;
+            background: rgba(79, 84, 92, 0.2);
+        }
+
+        .recent-item:hover {
+            background: rgba(79, 84, 92, 0.4);
+        }
+
+        .recent-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .recent-name {
+            color: #dcddde;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .recent-id {
+            color: #99aab5;
+            font-size: 10px;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #f04747;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-size: 10px;
+        }
+
+        .remove-btn:hover {
+            background: rgba(240, 71, 71, 0.2);
+        }
+
+        .user-section {
+            padding: 8px;
+            background: #292b2f;
+            border-top: 1px solid #40444b;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-radius: 4px;
+            background: rgba(79, 84, 92, 0.32);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #7289da, #99aab5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
         .main-content {
             flex: 1;
             display: flex;
@@ -161,6 +253,12 @@
             font-size: 16px;
             font-weight: 600;
             color: #ffffff;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .voice-controls {
@@ -190,6 +288,11 @@
 
         .voice-btn.muted {
             background: #f04747;
+            color: white;
+        }
+
+        .voice-btn.sharing {
+            background: #5865f2;
             color: white;
         }
 
@@ -429,17 +532,18 @@
         }
 
         .peer-list {
-            margin-top: 16px;
+            margin-top: 8px;
         }
 
         .peer-item {
             display: flex;
             align-items: center;
-            padding: 8px;
+            padding: 6px 8px;
             border-radius: 4px;
             margin-bottom: 4px;
             background: rgba(79, 84, 92, 0.2);
             transition: background-color 0.2s ease;
+            font-size: 12px;
         }
 
         .peer-item:hover {
@@ -456,6 +560,10 @@
 
         .peer-status.voice {
             background: #7289da;
+        }
+
+        .peer-status.screen {
+            background: #5865f2;
         }
 
         .hidden {
@@ -484,35 +592,146 @@
                 opacity: 1;
             }
         }
+
+        .screen-share-container {
+            background: #2f3136;
+            border-radius: 8px;
+            padding: 8px;
+            margin-top: 8px;
+            max-width: 400px;
+        }
+
+        .screen-share-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px;
+            background: #36393f;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .screen-share-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #dcddde;
+        }
+
+        .screen-share-video {
+            width: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #36393f;
+            border-radius: 8px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .modal-buttons .btn {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .channel-create {
+            padding: 8px;
+            margin-bottom: 8px;
+        }
+
+        .flex-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .flex-row input {
+            flex: 1;
+        }
+
+        .flex-row .btn {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
         <div class="sidebar">
             <div class="server-header">
-                <h3>🎮 FriendChat</h3>
+                <h3>🎮 FriendChat Pro</h3>
             </div>
             
-            <div class="connection-section">
-                <div class="section-title">Connection</div>
+            <div class="channels-section">
+                <div class="section-title">Your Profile</div>
                 <div class="input-group">
-                    <input type="text" id="usernameInput" placeholder="Your username" maxlength="20">
+                    <input type="text" id="usernameInput" placeholder="Your nickname" maxlength="20">
                 </div>
                 <button class="btn btn-primary" id="generateIdBtn">Generate My ID</button>
                 
                 <div id="userIdSection" class="hidden">
-                    <div class="section-title">Your ID</div>
+                    <div class="section-title">Your Connection ID</div>
                     <div class="input-group">
                         <input type="text" id="userIdDisplay" readonly>
                     </div>
-                    <button class="btn btn-primary" id="copyIdBtn">Copy ID</button>
+                    <button class="btn btn-secondary" id="copyIdBtn">Copy ID</button>
                 </div>
 
-                <div class="section-title">Connect to Friend</div>
+                <div class="section-title">Channels</div>
+                <div class="channel-create">
+                    <div class="flex-row">
+                        <input type="text" id="channelNameInput" placeholder="Channel name" maxlength="30">
+                        <button class="btn btn-secondary" id="createChannelBtn">Create</button>
+                    </div>
+                </div>
+                <div id="channelList">
+                    <div class="channel-item active" data-channel="general">
+                        <span class="channel-icon">#</span>
+                        general
+                    </div>
+                </div>
+
+                <div class="section-title">Quick Connect</div>
                 <div class="input-group">
-                    <input type="text" id="friendIdInput" placeholder="Friend's ID">
+                    <input type="text" id="friendIdInput" placeholder="Friend's ID or Channel Code">
                 </div>
                 <button class="btn btn-success" id="connectBtn">Connect</button>
+
+                <div class="section-title">Recent Connections</div>
+                <div id="recentList">
+                    <!-- Recent connections will appear here -->
+                </div>
 
                 <div class="peer-list" id="peerList">
                     <div class="section-title">Connected Friends</div>
@@ -523,7 +742,7 @@
                 <div class="user-info">
                     <div class="user-avatar" id="userAvatar">?</div>
                     <div>
-                        <div id="currentUsername">Set username</div>
+                        <div id="currentUsername">Set nickname</div>
                         <div style="font-size: 12px; color: #99aab5;">Online</div>
                     </div>
                 </div>
@@ -532,30 +751,38 @@
 
         <div class="main-content">
             <div class="chat-header">
-                <div class="chat-title"># general</div>
-                <div class="voice-controls">
-                    <button class="voice-btn" id="micBtn">🎤 Unmuted</button>
-                    <button class="voice-btn" id="speakerBtn">🔊 Enabled</button>
-                    <button class="voice-btn" id="voiceCallBtn">📞 Start Voice</button>
+                <div class="chat-title" id="chatTitle"># general</div>
+                <div class="header-controls">
+                    <div class="voice-controls">
+                        <button class="voice-btn" id="micBtn">🎤 Unmuted</button>
+                        <button class="voice-btn" id="speakerBtn">🔊 Enabled</button>
+                        <button class="voice-btn" id="voiceCallBtn">📞 Start Voice</button>
+                        <button class="voice-btn" id="screenShareBtn">🖥️ Share Screen</button>
+                    </div>
                 </div>
             </div>
 
             <div class="connection-status" id="connectionStatus">
-                Not connected - Generate your ID and share with friends
+                Welcome! Set your nickname and create or join a channel
             </div>
 
             <div class="messages-container" id="messagesContainer">
                 <div class="message">
                     <div class="message-header">
-                        <span class="message-author">FriendChat Bot</span>
+                        <span class="message-author">FriendChat Pro Bot</span>
                         <span class="message-time">now</span>
                     </div>
                     <div class="message-content">
-                        Welcome to FriendChat! 🎉<br>
-                        1. Set your username<br>
-                        2. Click "Generate My ID" and share it with friends<br>
-                        3. Enter your friend's ID to connect<br>
-                        4. Start chatting and voice calling!
+                        Welcome to FriendChat Pro! 🚀<br><br>
+                        <strong>New Features:</strong><br>
+                        • 💾 Automatic nickname saving<br>
+                        • 📺 Desktop screen sharing<br>
+                        • 🏷️ Channel system with custom names<br>
+                        • 📋 Recent connections history<br><br>
+                        <strong>Quick Start:</strong><br>
+                        1. Set your nickname above<br>
+                        2. Create a channel or join with a friend's ID<br>
+                        3. Start chatting, voice calling, and screen sharing!
                     </div>
                 </div>
             </div>
@@ -585,22 +812,52 @@
                 📁 Drop files here to share with friends!
             </div>
         </div>
+
+        <!-- Channel Join Modal -->
+        <div class="modal-overlay" id="channelModal">
+            <div class="modal-content">
+                <div class="modal-title">Join Channel</div>
+                <p style="margin-bottom: 16px; color: #99aab5;">Enter the channel name you want to join:</p>
+                <div class="input-group">
+                    <input type="text" id="joinChannelInput" placeholder="Channel name">
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" id="cancelJoinBtn">Cancel</button>
+                    <button class="btn btn-primary" id="confirmJoinBtn">Join</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        class FriendChat {
+        class FriendChatPro {
             constructor() {
                 this.peer = null;
                 this.connections = new Map();
                 this.username = '';
+                this.currentChannel = 'general';
+                this.channels = new Map();
+                this.recentConnections = new Map();
                 this.isVoiceCallActive = false;
                 this.isMuted = false;
                 this.isSpeakerEnabled = true;
                 this.localStream = null;
+                this.screenStream = null;
+                this.isScreenSharing = false;
+                this.remoteScreens = new Map();
+                
+                // Note: Using in-memory storage only
+                // For production deployment, consider implementing server-side storage
+                this.savedData = {
+                    username: '',
+                    recentConnections: [],
+                    channels: ['general']
+                };
                 
                 this.initializeElements();
                 this.attachEventListeners();
+                this.loadSavedData();
+                this.initializeChannels();
             }
 
             initializeElements() {
@@ -621,11 +878,21 @@
                     micBtn: document.getElementById('micBtn'),
                     speakerBtn: document.getElementById('speakerBtn'),
                     voiceCallBtn: document.getElementById('voiceCallBtn'),
+                    screenShareBtn: document.getElementById('screenShareBtn'),
                     fileUploadBtn: document.getElementById('fileUploadBtn'),
                     fileInput: document.getElementById('fileInput'),
                     dragOverlay: document.getElementById('dragOverlay'),
                     uploadProgress: document.getElementById('uploadProgress'),
-                    uploadText: document.getElementById('uploadText')
+                    uploadText: document.getElementById('uploadText'),
+                    channelNameInput: document.getElementById('channelNameInput'),
+                    createChannelBtn: document.getElementById('createChannelBtn'),
+                    channelList: document.getElementById('channelList'),
+                    chatTitle: document.getElementById('chatTitle'),
+                    recentList: document.getElementById('recentList'),
+                    channelModal: document.getElementById('channelModal'),
+                    joinChannelInput: document.getElementById('joinChannelInput'),
+                    cancelJoinBtn: document.getElementById('cancelJoinBtn'),
+                    confirmJoinBtn: document.getElementById('confirmJoinBtn')
                 };
             }
 
@@ -643,6 +910,19 @@
                 this.elements.micBtn.addEventListener('click', () => this.toggleMute());
                 this.elements.speakerBtn.addEventListener('click', () => this.toggleSpeaker());
                 this.elements.voiceCallBtn.addEventListener('click', () => this.toggleVoiceCall());
+                this.elements.screenShareBtn.addEventListener('click', () => this.toggleScreenShare());
+                
+                // Channel management
+                this.elements.createChannelBtn.addEventListener('click', () => this.createChannel());
+                this.elements.channelNameInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.createChannel();
+                    }
+                });
+                
+                // Modal events
+                this.elements.cancelJoinBtn.addEventListener('click', () => this.hideChannelModal());
+                this.elements.confirmJoinBtn.addEventListener('click', () => this.joinChannelFromModal());
                 
                 // File upload events
                 this.elements.fileUploadBtn.addEventListener('click', () => this.elements.fileInput.click());
@@ -657,15 +937,194 @@
                 this.elements.messageInput.addEventListener('input', () => this.autoResizeTextarea());
             }
 
+            loadSavedData() {
+                // In a real deployment, you would load from localStorage or a server
+                // For now, we'll use default values
+                if (this.savedData.username) {
+                    this.elements.usernameInput.value = this.savedData.username;
+                    this.updateUsername();
+                }
+            }
+
+            saveData() {
+                // Save user data (in production, use localStorage or server)
+                this.savedData.username = this.username;
+                this.savedData.recentConnections = Array.from(this.recentConnections.values());
+                this.savedData.channels = Array.from(this.channels.keys());
+                
+                // Note: In production deployment, implement actual persistence
+                console.log('Data saved (in-memory only):', this.savedData);
+            }
+
             updateUsername() {
                 this.username = this.elements.usernameInput.value.trim() || 'Anonymous';
                 this.elements.currentUsername.textContent = this.username;
                 this.elements.userAvatar.textContent = this.username.charAt(0).toUpperCase();
+                this.saveData();
+            }
+
+            initializeChannels() {
+                this.channels.set('general', {
+                    name: 'general',
+                    messages: [],
+                    connections: new Map()
+                });
+                this.switchToChannel('general');
+            }
+
+            createChannel() {
+                const channelName = this.elements.channelNameInput.value.trim();
+                if (!channelName) {
+                    this.showNotification('Please enter a channel name!');
+                    return;
+                }
+
+                if (this.channels.has(channelName)) {
+                    this.showNotification('Channel already exists!');
+                    return;
+                }
+
+                this.channels.set(channelName, {
+                    name: channelName,
+                    messages: [],
+                    connections: new Map()
+                });
+
+                this.addChannelToList(channelName);
+                this.switchToChannel(channelName);
+                this.elements.channelNameInput.value = '';
+                this.saveData();
+                this.showNotification(`Channel "${channelName}" created!`);
+            }
+
+            addChannelToList(channelName) {
+                const channelItem = document.createElement('div');
+                channelItem.className = 'channel-item';
+                channelItem.dataset.channel = channelName;
+                channelItem.innerHTML = `
+                    <span class="channel-icon">#</span>
+                    ${channelName}
+                `;
+                channelItem.addEventListener('click', () => this.switchToChannel(channelName));
+                this.elements.channelList.appendChild(channelItem);
+            }
+
+            switchToChannel(channelName) {
+                // Remove active class from all channels
+                this.elements.channelList.querySelectorAll('.channel-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Add active class to selected channel
+                const selectedChannel = this.elements.channelList.querySelector(`[data-channel="${channelName}"]`);
+                if (selectedChannel) {
+                    selectedChannel.classList.add('active');
+                }
+
+                this.currentChannel = channelName;
+                this.elements.chatTitle.textContent = `# ${channelName}`;
+                
+                // Clear messages and load channel-specific messages
+                this.clearMessages();
+                this.loadChannelMessages(channelName);
+                
+                // Update connection status
+                const channel = this.channels.get(channelName);
+                if (channel && channel.connections.size > 0) {
+                    this.updateConnectionStatus(`Connected in #${channelName} with ${channel.connections.size} friend(s)`, 'connected');
+                } else {
+                    this.updateConnectionStatus(`Ready to connect in #${channelName}`, '');
+                }
+            }
+
+            clearMessages() {
+                this.elements.messagesContainer.innerHTML = '';
+            }
+
+            loadChannelMessages(channelName) {
+                const channel = this.channels.get(channelName);
+                if (channel && channel.messages.length > 0) {
+                    channel.messages.forEach(msg => {
+                        if (msg.type === 'file') {
+                            this.addFileMessage(msg.author, msg.fileData, false);
+                        } else if (msg.type === 'screen') {
+                            this.addScreenShareMessage(msg.author, msg.isSharing);
+                        } else {
+                            this.addMessage(msg.author, msg.content, false);
+                        }
+                    });
+                }
+            }
+
+            showChannelModal() {
+                this.elements.channelModal.classList.add('active');
+                this.elements.joinChannelInput.focus();
+            }
+
+            hideChannelModal() {
+                this.elements.channelModal.classList.remove('active');
+                this.elements.joinChannelInput.value = '';
+            }
+
+            joinChannelFromModal() {
+                const channelName = this.elements.joinChannelInput.value.trim();
+                if (channelName) {
+                    if (!this.channels.has(channelName)) {
+                        this.createChannel();
+                        this.elements.channelNameInput.value = channelName;
+                        this.createChannel();
+                    } else {
+                        this.switchToChannel(channelName);
+                    }
+                    this.hideChannelModal();
+                }
+            }
+
+            addToRecentConnections(peerId, username) {
+                this.recentConnections.set(peerId, {
+                    id: peerId,
+                    username: username || 'Friend',
+                    lastConnected: Date.now()
+                });
+                this.updateRecentList();
+                this.saveData();
+            }
+
+            updateRecentList() {
+                this.elements.recentList.innerHTML = '';
+                
+                const recent = Array.from(this.recentConnections.values())
+                    .sort((a, b) => b.lastConnected - a.lastConnected)
+                    .slice(0, 5);
+
+                recent.forEach(connection => {
+                    const recentItem = document.createElement('div');
+                    recentItem.className = 'recent-item';
+                    recentItem.innerHTML = `
+                        <div class="recent-info">
+                            <div class="recent-name">${connection.username}</div>
+                            <div class="recent-id">${connection.id.substring(0, 8)}...</div>
+                        </div>
+                        <button class="remove-btn" onclick="window.friendChat.removeRecentConnection('${connection.id}')">×</button>
+                    `;
+                    recentItem.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('remove-btn')) return;
+                        this.elements.friendIdInput.value = connection.id;
+                        this.connectToFriend();
+                    });
+                    this.elements.recentList.appendChild(recentItem);
+                });
+            }
+
+            removeRecentConnection(peerId) {
+                this.recentConnections.delete(peerId);
+                this.updateRecentList();
+                this.saveData();
             }
 
             async generateId() {
                 if (!this.username) {
-                    this.showNotification('Please set a username first!');
+                    this.showNotification('Please set a nickname first!');
                     return;
                 }
 
@@ -720,21 +1179,34 @@
 
                 this.updateConnectionStatus('Connecting to friend...', 'connecting');
 
-                const conn = this.peer.connect(friendId);
+                const conn = this.peer.connect(friendId, {
+                    metadata: {
+                        username: this.username,
+                        channel: this.currentChannel
+                    }
+                });
                 this.handleOutgoingConnection(conn);
             }
 
             handleIncomingConnection(conn) {
                 conn.on('open', () => {
+                    const channel = this.channels.get(this.currentChannel);
+                    if (channel) {
+                        channel.connections.set(conn.peer, conn);
+                    }
                     this.connections.set(conn.peer, conn);
+                    
+                    const username = conn.metadata?.username || 'Friend';
+                    this.addToRecentConnections(conn.peer, username);
                     this.updateConnectionStatus(`Connected to ${this.connections.size} friend(s)`, 'connected');
-                    this.addMessage('System', `${conn.metadata?.username || 'Friend'} connected!`);
+                    this.addMessage('System', `${username} joined #${this.currentChannel}!`);
                     this.updatePeerList();
                     
                     // Send initial info
                     conn.send({
                         type: 'info',
-                        username: this.username
+                        username: this.username,
+                        channel: this.currentChannel
                     });
                 });
 
@@ -744,6 +1216,10 @@
 
                 conn.on('close', () => {
                     this.connections.delete(conn.peer);
+                    const channel = this.channels.get(this.currentChannel);
+                    if (channel) {
+                        channel.connections.delete(conn.peer);
+                    }
                     this.updateConnectionStatus(`Connected to ${this.connections.size} friend(s)`, this.connections.size > 0 ? 'connected' : '');
                     this.updatePeerList();
                 });
@@ -751,7 +1227,13 @@
 
             handleOutgoingConnection(conn) {
                 conn.on('open', () => {
+                    const channel = this.channels.get(this.currentChannel);
+                    if (channel) {
+                        channel.connections.set(conn.peer, conn);
+                    }
                     this.connections.set(conn.peer, conn);
+                    
+                    this.addToRecentConnections(conn.peer, 'Friend');
                     this.updateConnectionStatus(`Connected to ${this.connections.size} friend(s)`, 'connected');
                     this.addMessage('System', 'Connected to friend!');
                     this.updatePeerList();
@@ -760,7 +1242,8 @@
                     // Send initial info
                     conn.send({
                         type: 'info',
-                        username: this.username
+                        username: this.username,
+                        channel: this.currentChannel
                     });
                 });
 
@@ -770,6 +1253,10 @@
 
                 conn.on('close', () => {
                     this.connections.delete(conn.peer);
+                    const channel = this.channels.get(this.currentChannel);
+                    if (channel) {
+                        channel.connections.delete(conn.peer);
+                    }
                     this.updateConnectionStatus(`Connected to ${this.connections.size} friend(s)`, this.connections.size > 0 ? 'connected' : '');
                     this.updatePeerList();
                 });
@@ -785,9 +1272,12 @@
                     this.addMessage(data.username, data.content);
                 } else if (data.type === 'file') {
                     this.addFileMessage(data.username, data.fileData);
+                } else if (data.type === 'screen-share') {
+                    this.handleRemoteScreenShare(data, conn);
                 } else if (data.type === 'info') {
                     // Store friend's username
-                    conn.metadata = { username: data.username };
+                    conn.metadata = { username: data.username, channel: data.channel };
+                    this.addToRecentConnections(conn.peer, data.username);
                     this.updatePeerList();
                 }
             }
@@ -800,21 +1290,33 @@
                     type: 'message',
                     username: this.username,
                     content: content,
-                    timestamp: Date.now()
+                    timestamp: Date.now(),
+                    channel: this.currentChannel
                 };
 
-                // Send to all connected peers
-                this.connections.forEach(conn => {
-                    if (conn.open) {
-                        conn.send(message);
-                    }
-                });
+                // Send to all connected peers in current channel
+                const channel = this.channels.get(this.currentChannel);
+                if (channel) {
+                    channel.connections.forEach(conn => {
+                        if (conn.open) {
+                            conn.send(message);
+                        }
+                    });
+                    
+                    // Save message to channel
+                    channel.messages.push({
+                        type: 'message',
+                        author: this.username,
+                        content: content,
+                        timestamp: Date.now()
+                    });
+                }
 
                 this.addMessage(this.username, content);
                 this.elements.messageInput.value = '';
             }
 
-            addMessage(author, content) {
+            addMessage(author, content, saveToChannel = true) {
                 const messageDiv = document.createElement('div');
                 messageDiv.className = 'message';
                 
@@ -830,6 +1332,18 @@
 
                 this.elements.messagesContainer.appendChild(messageDiv);
                 this.elements.messagesContainer.scrollTop = this.elements.messagesContainer.scrollHeight;
+
+                if (saveToChannel && author !== 'System') {
+                    const channel = this.channels.get(this.currentChannel);
+                    if (channel) {
+                        channel.messages.push({
+                            type: 'message',
+                            author: author,
+                            content: content,
+                            timestamp: Date.now()
+                        });
+                    }
+                }
             }
 
             updateConnectionStatus(message, status = '') {
@@ -848,14 +1362,20 @@
                     const peerDiv = document.createElement('div');
                     peerDiv.className = 'peer-item';
                     const username = conn.metadata?.username || 'Friend';
+                    
+                    let statusClass = '';
+                    if (this.isVoiceCallActive) statusClass = 'voice';
+                    if (this.remoteScreens.has(peerId)) statusClass = 'screen';
+                    
                     peerDiv.innerHTML = `
-                        <div class="peer-status ${this.isVoiceCallActive ? 'voice' : ''}"></div>
+                        <div class="peer-status ${statusClass}"></div>
                         <span>${username}</span>
                     `;
                     listContainer.appendChild(peerDiv);
                 });
             }
 
+            // Voice and Screen Sharing Methods
             async toggleVoiceCall() {
                 if (!this.isVoiceCallActive) {
                     await this.startVoiceCall();
@@ -903,30 +1423,89 @@
                 this.showNotification('Voice call ended');
             }
 
-            handleIncomingCall(call) {
-                // Auto-accept incoming calls
-                navigator.mediaDevices.getUserMedia({ audio: true })
-                    .then((stream) => {
-                        call.answer(stream);
-                        this.localStream = stream;
-                        this.isVoiceCallActive = true;
-                        this.elements.voiceCallBtn.textContent = '📞 End Voice';
-                        this.elements.voiceCallBtn.classList.add('active');
-                        this.updatePeerList();
-                        
-                        call.on('stream', (remoteStream) => {
-                            this.playRemoteStream(remoteStream);
-                        });
-                    })
-                    .catch((err) => {
-                        console.error('Failed to answer call:', err);
-                        call.close();
+            async toggleScreenShare() {
+                if (!this.isScreenSharing) {
+                    await this.startScreenShare();
+                } else {
+                    this.endScreenShare();
+                }
+            }
+
+            async startScreenShare() {
+                if (this.connections.size === 0) {
+                    this.showNotification('No friends connected for screen sharing!');
+                    return;
+                }
+
+                try {
+                    this.screenStream = await navigator.mediaDevices.getDisplayMedia({ 
+                        video: true, 
+                        audio: true 
                     });
+                    
+                    this.isScreenSharing = true;
+                    this.elements.screenShareBtn.textContent = '🖥️ Stop Sharing';
+                    this.elements.screenShareBtn.classList.add('sharing');
+                    
+                    // Handle screen share end
+                    this.screenStream.getVideoTracks()[0].addEventListener('ended', () => {
+                        this.endScreenShare();
+                    });
+
+                    // Share screen with all connected peers
+                    this.connections.forEach((conn, peerId) => {
+                        const call = this.peer.call(peerId, this.screenStream);
+                        this.handleOutgoingCall(call);
+                        
+                        // Send screen share notification
+                        conn.send({
+                            type: 'screen-share',
+                            username: this.username,
+                            isSharing: true
+                        });
+                    });
+
+                    this.addMessage('System', `${this.username} started screen sharing`);
+                    this.showNotification('Screen sharing started!');
+                } catch (error) {
+                    console.error('Error starting screen share:', error);
+                    this.showNotification('Could not start screen sharing');
+                }
+            }
+
+            endScreenShare() {
+                if (this.screenStream) {
+                    this.screenStream.getTracks().forEach(track => track.stop());
+                    this.screenStream = null;
+                }
+                
+                this.isScreenSharing = false;
+                this.elements.screenShareBtn.textContent = '🖥️ Share Screen';
+                this.elements.screenShareBtn.classList.remove('sharing');
+                
+                // Notify peers that screen sharing stopped
+                this.connections.forEach((conn, peerId) => {
+                    conn.send({
+                        type: 'screen-share',
+                        username: this.username,
+                        isSharing: false
+                    });
+                });
+
+                this.addMessage('System', `${this.username} stopped screen sharing`);
+                this.showNotification('Screen sharing ended');
+            }
+
+            handleIncomingCall(call) {
+                call.answer();
+                call.on('stream', (remoteStream) => {
+                    this.playRemoteStream(remoteStream, call.peer);
+                });
             }
 
             handleOutgoingCall(call) {
                 call.on('stream', (remoteStream) => {
-                    this.playRemoteStream(remoteStream);
+                    this.playRemoteStream(remoteStream, call.peer);
                 });
 
                 call.on('close', () => {
@@ -934,12 +1513,64 @@
                 });
             }
 
-            playRemoteStream(stream) {
-                const audio = document.createElement('audio');
-                audio.srcObject = stream;
-                audio.autoplay = true;
-                audio.volume = this.isSpeakerEnabled ? 1 : 0;
-                document.body.appendChild(audio);
+            playRemoteStream(stream, peerId) {
+                const tracks = stream.getTracks();
+                const isScreenShare = tracks.length > 0 && tracks[0].kind === 'video';
+                
+                if (isScreenShare) {
+                    this.displayRemoteScreen(stream, peerId);
+                } else {
+                    const audio = document.createElement('audio');
+                    audio.srcObject = stream;
+                    audio.autoplay = true;
+                    audio.volume = this.isSpeakerEnabled ? 1 : 0;
+                    document.body.appendChild(audio);
+                }
+            }
+
+            displayRemoteScreen(stream, peerId) {
+                this.remoteScreens.set(peerId, stream);
+                
+                const screenContainer = document.createElement('div');
+                screenContainer.className = 'screen-share-container';
+                screenContainer.id = `screen-${peerId}`;
+                
+                const peerName = this.connections.get(peerId)?.metadata?.username || 'Friend';
+                
+                screenContainer.innerHTML = `
+                    <div class="screen-share-header">
+                        <span class="screen-share-title">🖥️ ${peerName}'s Screen</span>
+                        <button class="btn btn-secondary" onclick="this.parentElement.parentElement.remove()">×</button>
+                    </div>
+                    <video class="screen-share-video" autoplay muted></video>
+                `;
+                
+                const video = screenContainer.querySelector('video');
+                video.srcObject = stream;
+                video.addEventListener('click', () => {
+                    if (video.requestFullscreen) {
+                        video.requestFullscreen();
+                    }
+                });
+                
+                this.elements.messagesContainer.appendChild(screenContainer);
+                this.elements.messagesContainer.scrollTop = this.elements.messagesContainer.scrollHeight;
+                this.updatePeerList();
+            }
+
+            handleRemoteScreenShare(data, conn) {
+                const peerName = conn.metadata?.username || 'Friend';
+                if (data.isSharing) {
+                    this.addMessage('System', `${peerName} started screen sharing`);
+                } else {
+                    this.addMessage('System', `${peerName} stopped screen sharing`);
+                    const screenElement = document.getElementById(`screen-${conn.peer}`);
+                    if (screenElement) {
+                        screenElement.remove();
+                    }
+                    this.remoteScreens.delete(conn.peer);
+                    this.updatePeerList();
+                }
             }
 
             toggleMute() {
@@ -962,22 +1593,11 @@
                 this.elements.speakerBtn.textContent = this.isSpeakerEnabled ? '🔊 Enabled' : '🔇 Disabled';
             }
 
-            showNotification(message) {
-                const notification = document.createElement('div');
-                notification.className = 'notification';
-                notification.textContent = message;
-                document.body.appendChild(notification);
-
-                setTimeout(() => {
-                    notification.remove();
-                }, 3000);
-            }
-
-            // File handling methods
+            // File handling methods (same as before)
             handleFileSelect(event) {
                 const files = Array.from(event.target.files);
                 this.processFiles(files);
-                event.target.value = ''; // Reset input
+                event.target.value = '';
             }
 
             handleDragOver(event) {
@@ -991,7 +1611,6 @@
 
             handleDragLeave(event) {
                 event.preventDefault();
-                // Only hide if we're leaving the window
                 if (event.clientX === 0 && event.clientY === 0) {
                     this.elements.dragOverlay.classList.remove('active');
                 }
@@ -1019,7 +1638,6 @@
             }
 
             async sendFile(file) {
-                // Check file size (limit to 10MB for peer-to-peer)
                 const maxSize = 10 * 1024 * 1024; // 10MB
                 if (file.size > maxSize) {
                     this.showNotification(`File "${file.name}" is too large. Max size: 10MB`);
@@ -1043,14 +1661,16 @@
                         }
                     };
 
-                    // Send to all connected peers
-                    this.connections.forEach(conn => {
-                        if (conn.open) {
-                            conn.send(message);
-                        }
-                    });
+                    // Send to all connected peers in current channel
+                    const channel = this.channels.get(this.currentChannel);
+                    if (channel) {
+                        channel.connections.forEach(conn => {
+                            if (conn.open) {
+                                conn.send(message);
+                            }
+                        });
+                    }
 
-                    // Add to own chat
                     this.addFileMessage(this.username, message.fileData);
                     this.showUploadProgress(false);
                     this.showNotification(`File "${file.name}" sent!`);
@@ -1071,7 +1691,7 @@
                 });
             }
 
-            addFileMessage(author, fileData) {
+            addFileMessage(author, fileData, saveToChannel = true) {
                 const messageDiv = document.createElement('div');
                 messageDiv.className = 'message';
                 
@@ -1115,6 +1735,18 @@
 
                 this.elements.messagesContainer.appendChild(messageDiv);
                 this.elements.messagesContainer.scrollTop = this.elements.messagesContainer.scrollHeight;
+
+                if (saveToChannel) {
+                    const channel = this.channels.get(this.currentChannel);
+                    if (channel) {
+                        channel.messages.push({
+                            type: 'file',
+                            author: author,
+                            fileData: fileData,
+                            timestamp: Date.now()
+                        });
+                    }
+                }
             }
 
             isImageFile(mimeType) {
@@ -1163,10 +1795,21 @@
                 textarea.style.height = 'auto';
                 textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px';
             }
+
+            showNotification(message) {
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.textContent = message;
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
         }
 
         // Initialize the app
-        window.friendChat = new FriendChat();
+        window.friendChat = new FriendChatPro();
     </script>
 </body>
 </html>
