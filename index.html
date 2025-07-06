@@ -245,8 +245,15 @@
             border-top: 1px solid #40444b;
         }
 
+        .input-wrapper {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            position: relative;
+        }
+
         .message-input {
-            width: 100%;
+            flex: 1;
             padding: 12px 16px;
             background: #484c52;
             border: none;
@@ -256,6 +263,7 @@
             resize: none;
             outline: none;
             transition: background-color 0.2s ease;
+            max-height: 100px;
         }
 
         .message-input:focus {
@@ -264,6 +272,137 @@
 
         .message-input::placeholder {
             color: #72767d;
+        }
+
+        .file-upload-btn {
+            padding: 12px;
+            background: #5865f2;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+        }
+
+        .file-upload-btn:hover {
+            background: #4752c4;
+            transform: scale(1.05);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-preview {
+            max-width: 300px;
+            max-height: 200px;
+            border-radius: 8px;
+            margin-top: 8px;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .file-preview:hover {
+            opacity: 0.8;
+        }
+
+        .file-attachment {
+            display: flex;
+            align-items: center;
+            background: #4f545c;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            max-width: 300px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .file-attachment:hover {
+            background: #5d6269;
+        }
+
+        .file-icon {
+            width: 32px;
+            height: 32px;
+            background: #7289da;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .file-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-name {
+            font-weight: 500;
+            color: #dcddde;
+            margin-bottom: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: #99aab5;
+        }
+
+        .drag-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(88, 101, 242, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .drag-overlay.active {
+            display: flex;
+        }
+
+        .drag-text {
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            padding: 40px;
+            border: 3px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+        }
+
+        .upload-progress {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+            background: #7289da;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px 8px 0 0;
+            font-size: 12px;
+            display: none;
+        }
+
+        .upload-progress.active {
+            display: block;
         }
 
         .connection-status {
@@ -422,14 +561,30 @@
             </div>
 
             <div class="message-input-container">
-                <textarea 
-                    class="message-input" 
-                    id="messageInput" 
-                    placeholder="Type a message..." 
-                    rows="1"
-                    disabled
-                ></textarea>
+                <div class="upload-progress" id="uploadProgress">
+                    <span id="uploadText">Uploading file...</span>
+                </div>
+                <div class="input-wrapper">
+                    <button class="file-upload-btn" id="fileUploadBtn" title="Upload file">
+                        📎
+                    </button>
+                    <input type="file" class="file-input" id="fileInput" multiple accept="*/*">
+                    <textarea 
+                        class="message-input" 
+                        id="messageInput" 
+                        placeholder="Type a message or drag and drop files..." 
+                        rows="1"
+                        disabled
+                    ></textarea>
+                </div>
             </div>
+        </div>
+
+        <div class="drag-overlay" id="dragOverlay">
+            <div class="drag-text">
+                📁 Drop files here to share with friends!
+            </div>
+        </div>
         </div>
     </div>
 
@@ -465,7 +620,12 @@
                     peerList: document.getElementById('peerList'),
                     micBtn: document.getElementById('micBtn'),
                     speakerBtn: document.getElementById('speakerBtn'),
-                    voiceCallBtn: document.getElementById('voiceCallBtn')
+                    voiceCallBtn: document.getElementById('voiceCallBtn'),
+                    fileUploadBtn: document.getElementById('fileUploadBtn'),
+                    fileInput: document.getElementById('fileInput'),
+                    dragOverlay: document.getElementById('dragOverlay'),
+                    uploadProgress: document.getElementById('uploadProgress'),
+                    uploadText: document.getElementById('uploadText')
                 };
             }
 
@@ -483,6 +643,18 @@
                 this.elements.micBtn.addEventListener('click', () => this.toggleMute());
                 this.elements.speakerBtn.addEventListener('click', () => this.toggleSpeaker());
                 this.elements.voiceCallBtn.addEventListener('click', () => this.toggleVoiceCall());
+                
+                // File upload events
+                this.elements.fileUploadBtn.addEventListener('click', () => this.elements.fileInput.click());
+                this.elements.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+                
+                // Drag and drop events
+                document.addEventListener('dragover', (e) => this.handleDragOver(e));
+                document.addEventListener('dragleave', (e) => this.handleDragLeave(e));
+                document.addEventListener('drop', (e) => this.handleDrop(e));
+                
+                // Auto-resize textarea
+                this.elements.messageInput.addEventListener('input', () => this.autoResizeTextarea());
             }
 
             updateUsername() {
@@ -611,6 +783,8 @@
             handleMessage(data, conn) {
                 if (data.type === 'message') {
                     this.addMessage(data.username, data.content);
+                } else if (data.type === 'file') {
+                    this.addFileMessage(data.username, data.fileData);
                 } else if (data.type === 'info') {
                     // Store friend's username
                     conn.metadata = { username: data.username };
@@ -798,10 +972,201 @@
                     notification.remove();
                 }, 3000);
             }
+
+            // File handling methods
+            handleFileSelect(event) {
+                const files = Array.from(event.target.files);
+                this.processFiles(files);
+                event.target.value = ''; // Reset input
+            }
+
+            handleDragOver(event) {
+                event.preventDefault();
+                if (this.connections.size === 0) return;
+                
+                if (event.dataTransfer.types.includes('Files')) {
+                    this.elements.dragOverlay.classList.add('active');
+                }
+            }
+
+            handleDragLeave(event) {
+                event.preventDefault();
+                // Only hide if we're leaving the window
+                if (event.clientX === 0 && event.clientY === 0) {
+                    this.elements.dragOverlay.classList.remove('active');
+                }
+            }
+
+            handleDrop(event) {
+                event.preventDefault();
+                this.elements.dragOverlay.classList.remove('active');
+                
+                if (this.connections.size === 0) {
+                    this.showNotification('Connect to friends first!');
+                    return;
+                }
+
+                const files = Array.from(event.dataTransfer.files);
+                if (files.length > 0) {
+                    this.processFiles(files);
+                }
+            }
+
+            async processFiles(files) {
+                for (const file of files) {
+                    await this.sendFile(file);
+                }
+            }
+
+            async sendFile(file) {
+                // Check file size (limit to 10MB for peer-to-peer)
+                const maxSize = 10 * 1024 * 1024; // 10MB
+                if (file.size > maxSize) {
+                    this.showNotification(`File "${file.name}" is too large. Max size: 10MB`);
+                    return;
+                }
+
+                this.showUploadProgress(true, `Uploading ${file.name}...`);
+
+                try {
+                    const fileData = await this.fileToBase64(file);
+                    
+                    const message = {
+                        type: 'file',
+                        username: this.username,
+                        fileData: {
+                            name: file.name,
+                            size: file.size,
+                            type: file.type,
+                            data: fileData,
+                            timestamp: Date.now()
+                        }
+                    };
+
+                    // Send to all connected peers
+                    this.connections.forEach(conn => {
+                        if (conn.open) {
+                            conn.send(message);
+                        }
+                    });
+
+                    // Add to own chat
+                    this.addFileMessage(this.username, message.fileData);
+                    this.showUploadProgress(false);
+                    this.showNotification(`File "${file.name}" sent!`);
+
+                } catch (error) {
+                    console.error('Error sending file:', error);
+                    this.showUploadProgress(false);
+                    this.showNotification('Error uploading file');
+                }
+            }
+
+            fileToBase64(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            addFileMessage(author, fileData) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message';
+                
+                const time = new Date(fileData.timestamp || Date.now()).toLocaleTimeString([], { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                let fileContent = '';
+                
+                if (this.isImageFile(fileData.type)) {
+                    fileContent = `
+                        <img src="${fileData.data}" 
+                             class="file-preview" 
+                             alt="${fileData.name}"
+                             onclick="window.open('${fileData.data}', '_blank')"
+                             title="Click to open in new tab">
+                    `;
+                } else {
+                    const fileIcon = this.getFileIcon(fileData.type);
+                    const fileSize = this.formatFileSize(fileData.size);
+                    
+                    fileContent = `
+                        <div class="file-attachment" onclick="window.friendChat.downloadFile('${fileData.data}', '${fileData.name}')">
+                            <div class="file-icon">${fileIcon}</div>
+                            <div class="file-info">
+                                <div class="file-name">${fileData.name}</div>
+                                <div class="file-size">${fileSize}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <span class="message-author">${author}</span>
+                        <span class="message-time">${time}</span>
+                    </div>
+                    <div class="message-content">${fileContent}</div>
+                `;
+
+                this.elements.messagesContainer.appendChild(messageDiv);
+                this.elements.messagesContainer.scrollTop = this.elements.messagesContainer.scrollHeight;
+            }
+
+            isImageFile(mimeType) {
+                return mimeType && mimeType.startsWith('image/');
+            }
+
+            getFileIcon(mimeType) {
+                if (mimeType.startsWith('image/')) return '🖼️';
+                if (mimeType.startsWith('video/')) return '🎥';
+                if (mimeType.startsWith('audio/')) return '🎵';
+                if (mimeType.includes('pdf')) return '📄';
+                if (mimeType.includes('word') || mimeType.includes('document')) return '📝';
+                if (mimeType.includes('excel') || mimeType.includes('sheet')) return '📊';
+                if (mimeType.includes('zip') || mimeType.includes('rar')) return '📦';
+                return '📁';
+            }
+
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            downloadFile(dataUrl, filename) {
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            showUploadProgress(show, text = '') {
+                if (show) {
+                    this.elements.uploadProgress.classList.add('active');
+                    this.elements.uploadText.textContent = text;
+                } else {
+                    this.elements.uploadProgress.classList.remove('active');
+                }
+            }
+
+            autoResizeTextarea() {
+                const textarea = this.elements.messageInput;
+                textarea.style.height = 'auto';
+                textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px';
+            }
         }
 
         // Initialize the app
-        new FriendChat();
+        window.friendChat = new FriendChat();
     </script>
 </body>
 </html>
