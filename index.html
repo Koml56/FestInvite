@@ -41,7 +41,7 @@
             text-align: center;
         }
 
-        .channels-section {
+        .connection-section {
             flex: 1;
             padding: 16px 8px;
             overflow-y: auto;
@@ -134,31 +134,6 @@
             background: #5d6269;
         }
 
-        .channel-item {
-            display: flex;
-            align-items: center;
-            padding: 6px 8px;
-            margin: 2px 0;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 14px;
-        }
-
-        .channel-item:hover {
-            background: rgba(79, 84, 92, 0.32);
-        }
-
-        .channel-item.active {
-            background: rgba(114, 137, 218, 0.2);
-            color: #ffffff;
-        }
-
-        .channel-icon {
-            margin-right: 8px;
-            opacity: 0.8;
-        }
-
         .recent-item {
             display: flex;
             align-items: center;
@@ -206,6 +181,26 @@
 
         .remove-btn:hover {
             background: rgba(240, 71, 71, 0.2);
+        }
+
+        .room-info {
+            background: rgba(114, 137, 218, 0.1);
+            border-radius: 4px;
+            padding: 12px 8px;
+            margin: 8px 0;
+            text-align: center;
+        }
+
+        .room-code {
+            font-family: 'Courier New', monospace;
+            background: #40444b;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #7289da;
+            font-weight: bold;
+            margin: 8px 0;
+            letter-spacing: 1px;
         }
 
         .user-section {
@@ -623,66 +618,15 @@
             cursor: pointer;
         }
 
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: #36393f;
-            border-radius: 8px;
-            padding: 24px;
-            max-width: 400px;
-            width: 90%;
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 16px;
-            color: #ffffff;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 8px;
-            margin-top: 16px;
-        }
-
-        .modal-buttons .btn {
-            flex: 1;
-            margin-bottom: 0;
-        }
-
-        .channel-create {
+        .auto-reconnect {
+            background: rgba(67, 181, 129, 0.1);
+            border: 1px solid #43b581;
+            border-radius: 4px;
             padding: 8px;
-            margin-bottom: 8px;
-        }
-
-        .flex-row {
-            display: flex;
-            gap: 8px;
-        }
-
-        .flex-row input {
-            flex: 1;
-        }
-
-        .flex-row .btn {
-            margin-bottom: 0;
-            white-space: nowrap;
+            margin: 8px 0;
+            font-size: 11px;
+            color: #43b581;
+            text-align: center;
         }
     </style>
 </head>
@@ -693,48 +637,40 @@
                 <h3>🎮 FriendChat Pro</h3>
             </div>
             
-            <div class="channels-section">
+            <div class="connection-section">
                 <div class="section-title">Your Profile</div>
                 <div class="input-group">
                     <input type="text" id="usernameInput" placeholder="Your nickname" maxlength="20">
                 </div>
-                <button class="btn btn-primary" id="generateIdBtn">Generate My ID</button>
                 
-                <div id="userIdSection" class="hidden">
-                    <div class="section-title">Your Connection ID</div>
-                    <div class="input-group">
-                        <input type="text" id="userIdDisplay" readonly>
+                <div id="roomSection" class="hidden">
+                    <div class="room-info">
+                        <div style="font-size: 11px; color: #99aab5; margin-bottom: 4px;">Your Room</div>
+                        <div class="room-code" id="roomCode">Loading...</div>
+                        <button class="btn btn-secondary" id="copyRoomBtn">📋 Copy Room Code</button>
+                        <button class="btn btn-secondary" id="leaveRoomBtn">🚪 Leave Room</button>
                     </div>
-                    <button class="btn btn-secondary" id="copyIdBtn">Copy ID</button>
+                    <div class="auto-reconnect">
+                        ✅ Auto-reconnect enabled<br>
+                        Room persists after refresh
+                    </div>
                 </div>
+                
+                <button class="btn btn-primary" id="createRoomBtn">🏠 Create Room</button>
 
-                <div class="section-title">Channels</div>
-                <div class="channel-create">
-                    <div class="flex-row">
-                        <input type="text" id="channelNameInput" placeholder="Channel name" maxlength="30">
-                        <button class="btn btn-secondary" id="createChannelBtn">Create</button>
-                    </div>
-                </div>
-                <div id="channelList">
-                    <div class="channel-item active" data-channel="general">
-                        <span class="channel-icon">#</span>
-                        general
-                    </div>
-                </div>
-
-                <div class="section-title">Quick Connect</div>
+                <div class="section-title">Join Room</div>
                 <div class="input-group">
-                    <input type="text" id="friendIdInput" placeholder="Friend's ID or Channel Code">
+                    <input type="text" id="roomIdInput" placeholder="Enter room code">
                 </div>
-                <button class="btn btn-success" id="connectBtn">Connect</button>
+                <button class="btn btn-success" id="joinRoomBtn">🚀 Join Room</button>
 
-                <div class="section-title">Recent Connections</div>
+                <div class="section-title">Recent Rooms</div>
                 <div id="recentList">
                     <!-- Recent connections will appear here -->
                 </div>
 
                 <div class="peer-list" id="peerList">
-                    <div class="section-title">Connected Friends</div>
+                    <div class="section-title">Room Members</div>
                 </div>
             </div>
 
@@ -751,7 +687,7 @@
 
         <div class="main-content">
             <div class="chat-header">
-                <div class="chat-title" id="chatTitle"># general</div>
+                <div class="chat-title" id="chatTitle">🏠 FriendChat Room</div>
                 <div class="header-controls">
                     <div class="voice-controls">
                         <button class="voice-btn" id="micBtn">🎤 Unmuted</button>
@@ -763,7 +699,7 @@
             </div>
 
             <div class="connection-status" id="connectionStatus">
-                Welcome! Set your nickname and create or join a channel
+                Welcome! Set your nickname and create or join a room
             </div>
 
             <div class="messages-container" id="messagesContainer">
@@ -774,15 +710,16 @@
                     </div>
                     <div class="message-content">
                         Welcome to FriendChat Pro! 🚀<br><br>
-                        <strong>New Features:</strong><br>
+                        <strong>Simple & Persistent:</strong><br>
                         • 💾 Automatic nickname saving<br>
+                        • 🔄 Auto-reconnect after refresh<br>
                         • 📺 Desktop screen sharing<br>
-                        • 🏷️ Channel system with custom names<br>
-                        • 📋 Recent connections history<br><br>
+                        • 📋 Room codes for easy sharing<br><br>
                         <strong>Quick Start:</strong><br>
-                        1. Set your nickname above<br>
-                        2. Create a channel or join with a friend's ID<br>
-                        3. Start chatting, voice calling, and screen sharing!
+                        1. Set your nickname<br>
+                        2. Create a room (generates a code)<br>
+                        3. Share the room code with friends<br>
+                        4. Everyone stays connected even after refresh!
                     </div>
                 </div>
             </div>
@@ -812,21 +749,6 @@
                 📁 Drop files here to share with friends!
             </div>
         </div>
-
-        <!-- Channel Join Modal -->
-        <div class="modal-overlay" id="channelModal">
-            <div class="modal-content">
-                <div class="modal-title">Join Channel</div>
-                <p style="margin-bottom: 16px; color: #99aab5;">Enter the channel name you want to join:</p>
-                <div class="input-group">
-                    <input type="text" id="joinChannelInput" placeholder="Channel name">
-                </div>
-                <div class="modal-buttons">
-                    <button class="btn btn-secondary" id="cancelJoinBtn">Cancel</button>
-                    <button class="btn btn-primary" id="confirmJoinBtn">Join</button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -835,9 +757,8 @@
                 this.peer = null;
                 this.connections = new Map();
                 this.username = '';
-                this.currentChannel = 'general';
-                this.channels = new Map();
-                this.recentConnections = new Map();
+                this.currentRoom = null;
+                this.recentRooms = new Map();
                 this.isVoiceCallActive = false;
                 this.isMuted = false;
                 this.isSpeakerEnabled = true;
@@ -845,30 +766,25 @@
                 this.screenStream = null;
                 this.isScreenSharing = false;
                 this.remoteScreens = new Map();
-                
-                // Note: Using in-memory storage only
-                // For production deployment, consider implementing server-side storage
-                this.savedData = {
-                    username: '',
-                    recentConnections: [],
-                    channels: ['general']
-                };
+                this.messages = [];
+                this.autoReconnectEnabled = true;
                 
                 this.initializeElements();
                 this.attachEventListeners();
                 this.loadSavedData();
-                this.initializeChannels();
+                this.autoReconnect();
             }
 
             initializeElements() {
                 this.elements = {
                     usernameInput: document.getElementById('usernameInput'),
-                    generateIdBtn: document.getElementById('generateIdBtn'),
-                    userIdSection: document.getElementById('userIdSection'),
-                    userIdDisplay: document.getElementById('userIdDisplay'),
-                    copyIdBtn: document.getElementById('copyIdBtn'),
-                    friendIdInput: document.getElementById('friendIdInput'),
-                    connectBtn: document.getElementById('connectBtn'),
+                    createRoomBtn: document.getElementById('createRoomBtn'),
+                    roomSection: document.getElementById('roomSection'),
+                    roomCode: document.getElementById('roomCode'),
+                    copyRoomBtn: document.getElementById('copyRoomBtn'),
+                    leaveRoomBtn: document.getElementById('leaveRoomBtn'),
+                    roomIdInput: document.getElementById('roomIdInput'),
+                    joinRoomBtn: document.getElementById('joinRoomBtn'),
                     messageInput: document.getElementById('messageInput'),
                     messagesContainer: document.getElementById('messagesContainer'),
                     connectionStatus: document.getElementById('connectionStatus'),
@@ -884,22 +800,16 @@
                     dragOverlay: document.getElementById('dragOverlay'),
                     uploadProgress: document.getElementById('uploadProgress'),
                     uploadText: document.getElementById('uploadText'),
-                    channelNameInput: document.getElementById('channelNameInput'),
-                    createChannelBtn: document.getElementById('createChannelBtn'),
-                    channelList: document.getElementById('channelList'),
                     chatTitle: document.getElementById('chatTitle'),
-                    recentList: document.getElementById('recentList'),
-                    channelModal: document.getElementById('channelModal'),
-                    joinChannelInput: document.getElementById('joinChannelInput'),
-                    cancelJoinBtn: document.getElementById('cancelJoinBtn'),
-                    confirmJoinBtn: document.getElementById('confirmJoinBtn')
+                    recentList: document.getElementById('recentList')
                 };
             }
 
             attachEventListeners() {
-                this.elements.generateIdBtn.addEventListener('click', () => this.generateId());
-                this.elements.copyIdBtn.addEventListener('click', () => this.copyId());
-                this.elements.connectBtn.addEventListener('click', () => this.connectToFriend());
+                this.elements.createRoomBtn.addEventListener('click', () => this.createRoom());
+                this.elements.copyRoomBtn.addEventListener('click', () => this.copyRoomCode());
+                this.elements.leaveRoomBtn.addEventListener('click', () => this.leaveRoom());
+                this.elements.joinRoomBtn.addEventListener('click', () => this.joinRoom());
                 this.elements.messageInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
@@ -912,18 +822,6 @@
                 this.elements.voiceCallBtn.addEventListener('click', () => this.toggleVoiceCall());
                 this.elements.screenShareBtn.addEventListener('click', () => this.toggleScreenShare());
                 
-                // Channel management
-                this.elements.createChannelBtn.addEventListener('click', () => this.createChannel());
-                this.elements.channelNameInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        this.createChannel();
-                    }
-                });
-                
-                // Modal events
-                this.elements.cancelJoinBtn.addEventListener('click', () => this.hideChannelModal());
-                this.elements.confirmJoinBtn.addEventListener('click', () => this.joinChannelFromModal());
-                
                 // File upload events
                 this.elements.fileUploadBtn.addEventListener('click', () => this.elements.fileInput.click());
                 this.elements.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
@@ -935,25 +833,54 @@
                 
                 // Auto-resize textarea
                 this.elements.messageInput.addEventListener('input', () => this.autoResizeTextarea());
+                
+                // Room ID input enter key
+                this.elements.roomIdInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.joinRoom();
+                    }
+                });
             }
 
             loadSavedData() {
-                // In a real deployment, you would load from localStorage or a server
-                // For now, we'll use default values
-                if (this.savedData.username) {
-                    this.elements.usernameInput.value = this.savedData.username;
-                    this.updateUsername();
+                // Load from localStorage
+                try {
+                    const savedUsername = localStorage.getItem('friendchat_username');
+                    const savedRoom = localStorage.getItem('friendchat_current_room');
+                    const savedRecentRooms = localStorage.getItem('friendchat_recent_rooms');
+                    
+                    if (savedUsername) {
+                        this.elements.usernameInput.value = savedUsername;
+                        this.updateUsername();
+                    }
+                    
+                    if (savedRoom) {
+                        this.currentRoom = savedRoom;
+                    }
+                    
+                    if (savedRecentRooms) {
+                        const recent = JSON.parse(savedRecentRooms);
+                        recent.forEach(room => {
+                            this.recentRooms.set(room.id, room);
+                        });
+                        this.updateRecentList();
+                    }
+                } catch (error) {
+                    console.log('No saved data found or error loading:', error);
                 }
             }
 
             saveData() {
-                // Save user data (in production, use localStorage or server)
-                this.savedData.username = this.username;
-                this.savedData.recentConnections = Array.from(this.recentConnections.values());
-                this.savedData.channels = Array.from(this.channels.keys());
-                
-                // Note: In production deployment, implement actual persistence
-                console.log('Data saved (in-memory only):', this.savedData);
+                // Save to localStorage
+                try {
+                    localStorage.setItem('friendchat_username', this.username);
+                    if (this.currentRoom) {
+                        localStorage.setItem('friendchat_current_room', this.currentRoom);
+                    }
+                    localStorage.setItem('friendchat_recent_rooms', JSON.stringify(Array.from(this.recentRooms.values())));
+                } catch (error) {
+                    console.log('Error saving data:', error);
+                }
             }
 
             updateUsername() {
@@ -963,182 +890,37 @@
                 this.saveData();
             }
 
-            initializeChannels() {
-                this.channels.set('general', {
-                    name: 'general',
-                    messages: [],
-                    connections: new Map()
-                });
-                this.switchToChannel('general');
-            }
-
-            createChannel() {
-                const channelName = this.elements.channelNameInput.value.trim();
-                if (!channelName) {
-                    this.showNotification('Please enter a channel name!');
-                    return;
-                }
-
-                if (this.channels.has(channelName)) {
-                    this.showNotification('Channel already exists!');
-                    return;
-                }
-
-                this.channels.set(channelName, {
-                    name: channelName,
-                    messages: [],
-                    connections: new Map()
-                });
-
-                this.addChannelToList(channelName);
-                this.switchToChannel(channelName);
-                this.elements.channelNameInput.value = '';
-                this.saveData();
-                this.showNotification(`Channel "${channelName}" created!`);
-            }
-
-            addChannelToList(channelName) {
-                const channelItem = document.createElement('div');
-                channelItem.className = 'channel-item';
-                channelItem.dataset.channel = channelName;
-                channelItem.innerHTML = `
-                    <span class="channel-icon">#</span>
-                    ${channelName}
-                `;
-                channelItem.addEventListener('click', () => this.switchToChannel(channelName));
-                this.elements.channelList.appendChild(channelItem);
-            }
-
-            switchToChannel(channelName) {
-                // Remove active class from all channels
-                this.elements.channelList.querySelectorAll('.channel-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-
-                // Add active class to selected channel
-                const selectedChannel = this.elements.channelList.querySelector(`[data-channel="${channelName}"]`);
-                if (selectedChannel) {
-                    selectedChannel.classList.add('active');
-                }
-
-                this.currentChannel = channelName;
-                this.elements.chatTitle.textContent = `# ${channelName}`;
-                
-                // Clear messages and load channel-specific messages
-                this.clearMessages();
-                this.loadChannelMessages(channelName);
-                
-                // Update connection status
-                const channel = this.channels.get(channelName);
-                if (channel && channel.connections.size > 0) {
-                    this.updateConnectionStatus(`Connected in #${channelName} with ${channel.connections.size} friend(s)`, 'connected');
-                } else {
-                    this.updateConnectionStatus(`Ready to connect in #${channelName}`, '');
+            async autoReconnect() {
+                if (this.currentRoom && this.username) {
+                    // Wait a bit for the DOM to be ready
+                    setTimeout(() => {
+                        this.connectToPeer(this.currentRoom);
+                    }, 1000);
                 }
             }
 
-            clearMessages() {
-                this.elements.messagesContainer.innerHTML = '';
-            }
-
-            loadChannelMessages(channelName) {
-                const channel = this.channels.get(channelName);
-                if (channel && channel.messages.length > 0) {
-                    channel.messages.forEach(msg => {
-                        if (msg.type === 'file') {
-                            this.addFileMessage(msg.author, msg.fileData, false);
-                        } else if (msg.type === 'screen') {
-                            this.addScreenShareMessage(msg.author, msg.isSharing);
-                        } else {
-                            this.addMessage(msg.author, msg.content, false);
-                        }
-                    });
-                }
-            }
-
-            showChannelModal() {
-                this.elements.channelModal.classList.add('active');
-                this.elements.joinChannelInput.focus();
-            }
-
-            hideChannelModal() {
-                this.elements.channelModal.classList.remove('active');
-                this.elements.joinChannelInput.value = '';
-            }
-
-            joinChannelFromModal() {
-                const channelName = this.elements.joinChannelInput.value.trim();
-                if (channelName) {
-                    if (!this.channels.has(channelName)) {
-                        this.createChannel();
-                        this.elements.channelNameInput.value = channelName;
-                        this.createChannel();
-                    } else {
-                        this.switchToChannel(channelName);
-                    }
-                    this.hideChannelModal();
-                }
-            }
-
-            addToRecentConnections(peerId, username) {
-                this.recentConnections.set(peerId, {
-                    id: peerId,
-                    username: username || 'Friend',
-                    lastConnected: Date.now()
-                });
-                this.updateRecentList();
-                this.saveData();
-            }
-
-            updateRecentList() {
-                this.elements.recentList.innerHTML = '';
-                
-                const recent = Array.from(this.recentConnections.values())
-                    .sort((a, b) => b.lastConnected - a.lastConnected)
-                    .slice(0, 5);
-
-                recent.forEach(connection => {
-                    const recentItem = document.createElement('div');
-                    recentItem.className = 'recent-item';
-                    recentItem.innerHTML = `
-                        <div class="recent-info">
-                            <div class="recent-name">${connection.username}</div>
-                            <div class="recent-id">${connection.id.substring(0, 8)}...</div>
-                        </div>
-                        <button class="remove-btn" onclick="window.friendChat.removeRecentConnection('${connection.id}')">×</button>
-                    `;
-                    recentItem.addEventListener('click', (e) => {
-                        if (e.target.classList.contains('remove-btn')) return;
-                        this.elements.friendIdInput.value = connection.id;
-                        this.connectToFriend();
-                    });
-                    this.elements.recentList.appendChild(recentItem);
-                });
-            }
-
-            removeRecentConnection(peerId) {
-                this.recentConnections.delete(peerId);
-                this.updateRecentList();
-                this.saveData();
-            }
-
-            async generateId() {
+            async createRoom() {
                 if (!this.username) {
                     this.showNotification('Please set a nickname first!');
                     return;
                 }
 
-                this.updateConnectionStatus('Generating ID...', 'connecting');
+                this.updateConnectionStatus('Creating room...', 'connecting');
                 
                 try {
                     this.peer = new Peer();
                     
                     this.peer.on('open', (id) => {
-                        this.elements.userIdDisplay.value = id;
-                        this.elements.userIdSection.classList.remove('hidden');
+                        this.currentRoom = id;
+                        this.elements.roomCode.textContent = id;
+                        this.elements.roomSection.classList.remove('hidden');
                         this.elements.messageInput.disabled = false;
-                        this.updateConnectionStatus('Ready to connect! Share your ID with friends.', 'connected');
-                        this.showNotification('ID generated! Share it with friends.');
+                        this.elements.chatTitle.textContent = `🏠 Room: ${id.substring(0, 8)}...`;
+                        
+                        this.addToRecentRooms(id, 'Host');
+                        this.updateConnectionStatus('Room created! Share the code with friends.', 'connected');
+                        this.showNotification('Room created! Share the code with friends.');
+                        this.saveData();
                     });
 
                     this.peer.on('connection', (conn) => {
@@ -1155,58 +937,103 @@
                     });
 
                 } catch (error) {
-                    this.updateConnectionStatus('Failed to generate ID', 'error');
-                    console.error('Error generating ID:', error);
+                    this.updateConnectionStatus('Failed to create room', 'error');
+                    console.error('Error creating room:', error);
                 }
             }
 
-            copyId() {
-                navigator.clipboard.writeText(this.elements.userIdDisplay.value);
-                this.showNotification('ID copied to clipboard!');
+            copyRoomCode() {
+                navigator.clipboard.writeText(this.currentRoom);
+                this.showNotification('Room code copied to clipboard!');
             }
 
-            connectToFriend() {
-                const friendId = this.elements.friendIdInput.value.trim();
-                if (!friendId) {
-                    this.showNotification('Please enter a friend ID!');
+            leaveRoom() {
+                if (this.peer) {
+                    this.peer.destroy();
+                }
+                
+                this.connections.clear();
+                this.currentRoom = null;
+                this.elements.roomSection.classList.add('hidden');
+                this.elements.messageInput.disabled = true;
+                this.elements.chatTitle.textContent = '🏠 FriendChat Room';
+                this.messages = [];
+                this.clearMessages();
+                
+                this.updateConnectionStatus('Left room. Create or join a new one.', '');
+                this.updatePeerList();
+                
+                // Clear saved room
+                localStorage.removeItem('friendchat_current_room');
+                this.showNotification('Left room');
+            }
+
+            async joinRoom() {
+                const roomId = this.elements.roomIdInput.value.trim();
+                if (!roomId) {
+                    this.showNotification('Please enter a room code!');
                     return;
                 }
 
-                if (!this.peer) {
-                    this.showNotification('Generate your ID first!');
+                if (!this.username) {
+                    this.showNotification('Please set a nickname first!');
                     return;
                 }
 
-                this.updateConnectionStatus('Connecting to friend...', 'connecting');
+                await this.connectToPeer(roomId);
+            }
 
-                const conn = this.peer.connect(friendId, {
-                    metadata: {
-                        username: this.username,
-                        channel: this.currentChannel
+            async connectToPeer(roomId) {
+                this.updateConnectionStatus('Connecting to room...', 'connecting');
+
+                try {
+                    if (!this.peer || this.peer.destroyed) {
+                        this.peer = new Peer();
+                        
+                        await new Promise((resolve, reject) => {
+                            this.peer.on('open', resolve);
+                            this.peer.on('error', reject);
+                            setTimeout(reject, 10000); // 10 second timeout
+                        });
+
+                        this.peer.on('connection', (conn) => {
+                            this.handleIncomingConnection(conn);
+                        });
+
+                        this.peer.on('call', (call) => {
+                            this.handleIncomingCall(call);
+                        });
                     }
-                });
-                this.handleOutgoingConnection(conn);
+
+                    const conn = this.peer.connect(roomId, {
+                        metadata: {
+                            username: this.username
+                        }
+                    });
+                    
+                    this.handleOutgoingConnection(conn, roomId);
+                    
+                } catch (error) {
+                    this.updateConnectionStatus('Failed to connect to room', 'error');
+                    console.error('Error connecting to room:', error);
+                    this.showNotification('Failed to connect to room');
+                }
             }
 
             handleIncomingConnection(conn) {
                 conn.on('open', () => {
-                    const channel = this.channels.get(this.currentChannel);
-                    if (channel) {
-                        channel.connections.set(conn.peer, conn);
-                    }
                     this.connections.set(conn.peer, conn);
                     
                     const username = conn.metadata?.username || 'Friend';
-                    this.addToRecentConnections(conn.peer, username);
-                    this.updateConnectionStatus(`Connected to ${this.connections.size} friend(s)`, 'connected');
-                    this.addMessage('System', `${username} joined #${this.currentChannel}!`);
+                    this.updateConnectionStatus(`Connected! ${this.connections.size} member(s) in room`, 'connected');
+                    this.addMessage('System', `${username} joined the room!`);
                     this.updatePeerList();
                     
-                    // Send initial info
+                    // Send welcome info
                     conn.send({
                         type: 'info',
                         username: this.username,
-                        channel: this.currentChannel
+                        messages: this.messages.slice(-10) // Send last 10 messages
                     });
                 });
 
@@ -1216,34 +1043,32 @@
 
                 conn.on('close', () => {
                     this.connections.delete(conn.peer);
-                    const channel = this.channels.get(this.currentChannel);
-                    if (channel) {
-                        channel.connections.delete(conn.peer);
-                    }
-                    this.updateConnectionStatus(`Connected to ${this.connections.size} friend(s)`, this.connections.size > 0 ? 'connected' : '');
+                    this.updateConnectionStatus(`${this.connections.size} member(s) in room`, this.connections.size > 0 ? 'connected' : '');
                     this.updatePeerList();
                 });
             }
 
-            handleOutgoingConnection(conn) {
+            handleOutgoingConnection(conn, roomId) {
                 conn.on('open', () => {
-                    const channel = this.channels.get(this.currentChannel);
-                    if (channel) {
-                        channel.connections.set(conn.peer, conn);
-                    }
                     this.connections.set(conn.peer, conn);
+                    this.currentRoom = roomId;
                     
-                    this.addToRecentConnections(conn.peer, 'Friend');
-                    this.updateConnectionStatus(`Connected to ${this.connections.size} friend(s)`, 'connected');
-                    this.addMessage('System', 'Connected to friend!');
+                    this.elements.roomCode.textContent = roomId;
+                    this.elements.roomSection.classList.remove('hidden');
+                    this.elements.messageInput.disabled = false;
+                    this.elements.chatTitle.textContent = `🏠 Room: ${roomId.substring(0, 8)}...`;
+                    this.elements.roomIdInput.value = '';
+                    
+                    this.addToRecentRooms(roomId, 'Member');
+                    this.updateConnectionStatus(`Joined room! ${this.connections.size} member(s)`, 'connected');
+                    this.addMessage('System', 'Connected to room!');
                     this.updatePeerList();
-                    this.elements.friendIdInput.value = '';
+                    this.saveData();
                     
                     // Send initial info
                     conn.send({
                         type: 'info',
-                        username: this.username,
-                        channel: this.currentChannel
+                        username: this.username
                     });
                 });
 
@@ -1253,17 +1078,14 @@
 
                 conn.on('close', () => {
                     this.connections.delete(conn.peer);
-                    const channel = this.channels.get(this.currentChannel);
-                    if (channel) {
-                        channel.connections.delete(conn.peer);
-                    }
-                    this.updateConnectionStatus(`Connected to ${this.connections.size} friend(s)`, this.connections.size > 0 ? 'connected' : '');
+                    this.updateConnectionStatus(`${this.connections.size} member(s) in room`, this.connections.size > 0 ? 'connected' : '');
                     this.updatePeerList();
                 });
 
                 conn.on('error', (err) => {
                     this.updateConnectionStatus('Connection failed', 'error');
                     console.error('Connection error:', err);
+                    this.showNotification('Failed to join room');
                 });
             }
 
@@ -1275,11 +1097,63 @@
                 } else if (data.type === 'screen-share') {
                     this.handleRemoteScreenShare(data, conn);
                 } else if (data.type === 'info') {
-                    // Store friend's username
-                    conn.metadata = { username: data.username, channel: data.channel };
-                    this.addToRecentConnections(conn.peer, data.username);
+                    // Store friend's username and sync messages
+                    conn.metadata = { username: data.username };
                     this.updatePeerList();
+                    
+                    // If they sent recent messages, display them
+                    if (data.messages && this.messages.length === 0) {
+                        data.messages.forEach(msg => {
+                            if (msg.type === 'file') {
+                                this.addFileMessage(msg.author, msg.fileData, false);
+                            } else {
+                                this.addMessage(msg.author, msg.content, false);
+                            }
+                        });
+                    }
                 }
+            }
+
+            addToRecentRooms(roomId, role) {
+                this.recentRooms.set(roomId, {
+                    id: roomId,
+                    role: role,
+                    lastConnected: Date.now()
+                });
+                this.updateRecentList();
+                this.saveData();
+            }
+
+            updateRecentList() {
+                this.elements.recentList.innerHTML = '';
+                
+                const recent = Array.from(this.recentRooms.values())
+                    .sort((a, b) => b.lastConnected - a.lastConnected)
+                    .slice(0, 5);
+
+                recent.forEach(room => {
+                    const recentItem = document.createElement('div');
+                    recentItem.className = 'recent-item';
+                    recentItem.innerHTML = `
+                        <div class="recent-info">
+                            <div class="recent-name">${room.role} - Room</div>
+                            <div class="recent-id">${room.id.substring(0, 12)}...</div>
+                        </div>
+                        <button class="remove-btn" onclick="window.friendChat.removeRecentRoom('${room.id}')">×</button>
+                    `;
+                    recentItem.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('remove-btn')) return;
+                        this.elements.roomIdInput.value = room.id;
+                        this.joinRoom();
+                    });
+                    this.elements.recentList.appendChild(recentItem);
+                });
+            }
+
+            removeRecentRoom(roomId) {
+                this.recentRooms.delete(roomId);
+                this.updateRecentList();
+                this.saveData();
             }
 
             sendMessage() {
@@ -1290,33 +1164,21 @@
                     type: 'message',
                     username: this.username,
                     content: content,
-                    timestamp: Date.now(),
-                    channel: this.currentChannel
+                    timestamp: Date.now()
                 };
 
-                // Send to all connected peers in current channel
-                const channel = this.channels.get(this.currentChannel);
-                if (channel) {
-                    channel.connections.forEach(conn => {
-                        if (conn.open) {
-                            conn.send(message);
-                        }
-                    });
-                    
-                    // Save message to channel
-                    channel.messages.push({
-                        type: 'message',
-                        author: this.username,
-                        content: content,
-                        timestamp: Date.now()
-                    });
-                }
+                // Send to all connected peers
+                this.connections.forEach(conn => {
+                    if (conn.open) {
+                        conn.send(message);
+                    }
+                });
 
                 this.addMessage(this.username, content);
                 this.elements.messageInput.value = '';
             }
 
-            addMessage(author, content, saveToChannel = true) {
+            addMessage(author, content, saveToHistory = true) {
                 const messageDiv = document.createElement('div');
                 messageDiv.className = 'message';
                 
@@ -1333,17 +1195,23 @@
                 this.elements.messagesContainer.appendChild(messageDiv);
                 this.elements.messagesContainer.scrollTop = this.elements.messagesContainer.scrollHeight;
 
-                if (saveToChannel && author !== 'System') {
-                    const channel = this.channels.get(this.currentChannel);
-                    if (channel) {
-                        channel.messages.push({
-                            type: 'message',
-                            author: author,
-                            content: content,
-                            timestamp: Date.now()
-                        });
+                if (saveToHistory && author !== 'System') {
+                    this.messages.push({
+                        type: 'message',
+                        author: author,
+                        content: content,
+                        timestamp: Date.now()
+                    });
+                    
+                    // Keep only last 50 messages
+                    if (this.messages.length > 50) {
+                        this.messages = this.messages.slice(-50);
                     }
                 }
+            }
+
+            clearMessages() {
+                this.elements.messagesContainer.innerHTML = '';
             }
 
             updateConnectionStatus(message, status = '') {
@@ -1375,7 +1243,7 @@
                 });
             }
 
-            // Voice and Screen Sharing Methods
+            // Voice and Screen Sharing Methods (same as before)
             async toggleVoiceCall() {
                 if (!this.isVoiceCallActive) {
                     await this.startVoiceCall();
@@ -1593,7 +1461,7 @@
                 this.elements.speakerBtn.textContent = this.isSpeakerEnabled ? '🔊 Enabled' : '🔇 Disabled';
             }
 
-            // File handling methods (same as before)
+            // File handling methods (same as before but simplified)
             handleFileSelect(event) {
                 const files = Array.from(event.target.files);
                 this.processFiles(files);
@@ -1621,7 +1489,7 @@
                 this.elements.dragOverlay.classList.remove('active');
                 
                 if (this.connections.size === 0) {
-                    this.showNotification('Connect to friends first!');
+                    this.showNotification('Connect to a room first!');
                     return;
                 }
 
@@ -1661,15 +1529,12 @@
                         }
                     };
 
-                    // Send to all connected peers in current channel
-                    const channel = this.channels.get(this.currentChannel);
-                    if (channel) {
-                        channel.connections.forEach(conn => {
-                            if (conn.open) {
-                                conn.send(message);
-                            }
-                        });
-                    }
+                    // Send to all connected peers
+                    this.connections.forEach(conn => {
+                        if (conn.open) {
+                            conn.send(message);
+                        }
+                    });
 
                     this.addFileMessage(this.username, message.fileData);
                     this.showUploadProgress(false);
@@ -1691,7 +1556,7 @@
                 });
             }
 
-            addFileMessage(author, fileData, saveToChannel = true) {
+            addFileMessage(author, fileData, saveToHistory = true) {
                 const messageDiv = document.createElement('div');
                 messageDiv.className = 'message';
                 
@@ -1736,15 +1601,17 @@
                 this.elements.messagesContainer.appendChild(messageDiv);
                 this.elements.messagesContainer.scrollTop = this.elements.messagesContainer.scrollHeight;
 
-                if (saveToChannel) {
-                    const channel = this.channels.get(this.currentChannel);
-                    if (channel) {
-                        channel.messages.push({
-                            type: 'file',
-                            author: author,
-                            fileData: fileData,
-                            timestamp: Date.now()
-                        });
+                if (saveToHistory) {
+                    this.messages.push({
+                        type: 'file',
+                        author: author,
+                        fileData: fileData,
+                        timestamp: Date.now()
+                    });
+                    
+                    // Keep only last 50 messages
+                    if (this.messages.length > 50) {
+                        this.messages = this.messages.slice(-50);
                     }
                 }
             }
