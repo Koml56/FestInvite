@@ -529,26 +529,155 @@ Write the complete function now:`;
 
             async executeDynamicFunction(functionName, functionCode) {
                 try {
-                    // Create a safe execution context
-                    const functionWrapper = new Function('files', 'helper', `
+                    // Create a safe execution context with proper function binding
+                    const safeCode = `
+                        // Bind helper methods to context
+                        const addMessage = helper.addMessage.bind(helper);
+                        const downloadFile = helper.downloadFile.bind(helper);
+                        const readFileAsText = helper.readFileAsText.bind(helper);
+                        const readFileAsArrayBuffer = helper.readFileAsArrayBuffer.bind(helper);
+                        const loadImage = helper.loadImage.bind(helper);
+                        
+                        // Define the function code
                         ${functionCode}
-                        // If there's a main function, call it
-                        if (typeof convertToJPG !== 'undefined') {
-                            return convertToJPG(files, helper);
+                        
+                        // Execute the main function
+                        if (typeof convertFileToJPG !== 'undefined') {
+                            return convertFileToJPG.call(helper, files);
+                        } else if (typeof convertToJPG !== 'undefined') {
+                            return convertToJPG.call(helper, files);
                         } else if (typeof convertToPNG !== 'undefined') {
-                            return convertToPNG(files, helper);
+                            return convertToPNG.call(helper, files);
                         } else if (typeof convertToGIF !== 'undefined') {
-                            return convertToGIF(files, helper);
+                            return convertToGIF.call(helper, files);
                         } else if (typeof main !== 'undefined') {
-                            return main(files, helper);
+                            return main.call(helper, files);
+                        } else {
+                            // Try to find any function that takes files as parameter
+                            const funcNames = Object.getOwnPropertyNames(this).filter(name => 
+                                typeof this[name] === 'function' && name.includes('convert')
+                            );
+                            if (funcNames.length > 0) {
+                                return this[funcNames[0]](files);
+                            }
                         }
-                    `);
+                    `;
                     
+                    const functionWrapper = new Function('files', 'helper', safeCode);
                     await functionWrapper(this.selectedFiles, this);
                     this.addMessage('system', `✅ Successfully executed ${functionName}`);
                     
                 } catch (error) {
                     this.addMessage('bot', `Error executing function: ${error.message}`);
+                    this.addMessage('bot', `Let me try a simpler approach...`);
+                    
+                    // Fallback: try to execute as a simpler function
+                    try {
+                        await this.executeSimpleConversion(functionName);
+                    } catch (fallbackError) {
+                        this.addMessage('bot', `Fallback also failed: ${fallbackError.message}`);
+                    }
+                }
+            }
+
+            async executeSimpleConversion(functionName) {
+                // Simple fallback conversion based on function name
+                if (functionName.toLowerCase().includes('jpg') || functionName.toLowerCase().includes('jpeg')) {
+                    await this.convertToJPG(this.selectedFiles);
+                } else if (functionName.toLowerCase().includes('png')) {
+                    await this.convertToPNG(this.selectedFiles);
+                } else if (functionName.toLowerCase().includes('gif')) {
+                    await this.convertToGIF(this.selectedFiles);
+                }
+            }
+
+            async convertToJPG(files) {
+                try {
+                    for (const file of files) {
+                        if (!file.type.startsWith('image/')) {
+                            this.addMessage('bot', `${file.name} is not an image file.`);
+                            continue;
+                        }
+
+                        const img = await this.loadImage(file);
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        
+                        // Fill with white background for transparent images
+                        ctx.fillStyle = 'white';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        
+                        ctx.drawImage(img, 0, 0);
+                        
+                        canvas.toBlob((blob) => {
+                            const fileName = file.name.replace(/\.[^/.]+$/, '') + '.jpg';
+                            this.downloadFile(blob, fileName);
+                        }, 'image/jpeg', 0.95);
+                    }
+                } catch (error) {
+                    this.addMessage('bot', `Error converting to JPG: ${error.message}`);
+                }
+            }
+
+            async convertToPNG(files) {
+                try {
+                    for (const file of files) {
+                        if (!file.type.startsWith('image/')) {
+                            this.addMessage('bot', `${file.name} is not an image file.`);
+                            continue;
+                        }
+
+                        const img = await this.loadImage(file);
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+                        
+                        canvas.toBlob((blob) => {
+                            const fileName = file.name.replace(/\.[^/.]+$/, '') + '.png';
+                            this.downloadFile(blob, fileName);
+                        }, 'image/png');
+                    }
+                } catch (error) {
+                    this.addMessage('bot', `Error converting to PNG: ${error.message}`);
+                }
+            }
+
+            async convertToGIF(files) {
+                try {
+                    for (const file of files) {
+                        if (!file.type.startsWith('image/')) {
+                            this.addMessage('bot', `${file.name} is not an image file.`);
+                            continue;
+                        }
+
+                        // Note: Browser doesn't have native GIF encoding
+                        // This is a simplified version that converts to canvas and downloads as PNG
+                        // For true GIF support, would need a library like gif.js
+                        
+                        this.addMessage('bot', `Converting ${file.name} to GIF format (via PNG due to browser limitations)...`);
+                        
+                        const img = await this.loadImage(file);
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+                        
+                        canvas.toBlob((blob) => {
+                            const fileName = file.name.replace(/\.[^/.]+$/, '') + '.gif.png';
+                            this.downloadFile(blob, fileName);
+                            this.addMessage('bot', `Note: Saved as PNG due to browser GIF encoding limitations.`);
+                        }, 'image/png');
+                    }
+                } catch (error) {
+                    this.addMessage('bot', `Error converting to GIF: ${error.message}`);
                 }
             }
 
