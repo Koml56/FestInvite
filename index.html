@@ -42,7 +42,8 @@
             border: 1px solid #ddd;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             overflow: hidden;
-            background-size: cover;
+            background-size: contain;
+            background-repeat: no-repeat;
             background-position: center;
             cursor: crosshair;
         }
@@ -145,6 +146,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 14px;
+            text-align: var(--textbox-align, left);
         }
 
         .control-group input[type="range"] {
@@ -254,6 +256,16 @@
             </div>
 
             <div class="control-group">
+                <label>Text Alignment:</label>
+                <select id="textAlign">
+                    <option value="left">Left</option>
+                    <option value="center">Center</option>
+                    <option value="right">Right</option>
+                    <option value="justify">Justify</option>
+                </select>
+            </div>
+
+            <div class="control-group">
                 <label>Font Family:</label>
                 <select id="fontFamily">
                     <option value="Inter">Inter</option>
@@ -360,7 +372,7 @@
         let dragOffset = { x: 0, y: 0 };
         let resizeStartData = {};
         let textElements = [];
-        let backgroundImage = null;
+let backgroundImage = 'Burgeripäivä 10.9-1_page-0001.jpg';
         let snapEnabled = true;
         let snapDistance = 10;
         let resizeHandles = null;
@@ -379,6 +391,14 @@
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
         const canvas = document.getElementById('canvas');
+
+        // Set default background image
+        window.addEventListener('DOMContentLoaded', () => {
+            if (backgroundImage) {
+                canvas.style.backgroundImage = `url('${backgroundImage}')`;
+                uploadArea.innerHTML = '<p>✅ Default background image loaded!</p>';
+            }
+        });
 
         uploadArea.addEventListener('click', () => fileInput.click());
         uploadArea.addEventListener('dragover', (e) => {
@@ -451,7 +471,7 @@
                     element.style.fontWeight = elementConfig.fontWeight;
                     element.style.letterSpacing = elementConfig.letterSpacing + 'px';
                     element.style.lineHeight = elementConfig.lineHeight;
-                    
+                    element.style.textAlign = elementConfig.textAlign || 'left';
                     // Handle width and height
                     if (elementConfig.width && elementConfig.width !== 'auto') {
                         element.style.width = elementConfig.width + 'px';
@@ -459,7 +479,6 @@
                     if (elementConfig.height && elementConfig.height !== 'auto') {
                         element.style.height = elementConfig.height + 'px';
                     }
-                    
                     const elementData = {
                         id: Date.now() + Math.random(),
                         element: element,
@@ -473,7 +492,8 @@
                         letterSpacing: parseFloat(elementConfig.letterSpacing),
                         lineHeight: parseFloat(elementConfig.lineHeight),
                         width: elementConfig.width || 'auto',
-                        height: elementConfig.height || 'auto'
+                        height: elementConfig.height || 'auto',
+                        textAlign: elementConfig.textAlign || 'left'
                     };
 
                     textElements.push(elementData);
@@ -491,33 +511,34 @@
 
         // Add text element
         function addTextElement() {
-            const element = document.createElement('div');
-            element.className = 'text-element';
-            element.textContent = 'New Text';
-            element.style.left = '50px';
-            element.style.top = '50px';
-            element.style.fontSize = '16px';
-            element.style.fontFamily = 'Inter';
-            element.style.color = '#000000';
-            element.style.fontWeight = 'normal';
-            element.style.width = 'auto';
-            element.style.height = 'auto';
-            
-            const elementData = {
-                id: Date.now(),
-                element: element,
-                text: 'New Text',
-                x: 50,
-                y: 50,
-                fontSize: 16,
-                fontFamily: 'Inter',
-                color: '#000000',
-                fontWeight: 'normal',
-                letterSpacing: 0,
-                lineHeight: 1.2,
-                width: 'auto',
-                height: 'auto'
-            };
+    const element = document.createElement('div');
+    element.className = 'text-element';
+    element.textContent = 'New Text';
+    element.style.left = '50px';
+    element.style.top = '50px';
+    element.style.fontSize = '16px';
+    element.style.fontFamily = 'Inter';
+    element.style.color = '#000000';
+    element.style.fontWeight = 'normal';
+    element.style.width = 'auto';
+    element.style.height = 'auto';
+    element.style.textAlign = 'left';
+    const elementData = {
+        id: Date.now(),
+        element: element,
+        text: 'New Text',
+        x: 50,
+        y: 50,
+        fontSize: 16,
+        fontFamily: 'Inter',
+        color: '#000000',
+        fontWeight: 'normal',
+        letterSpacing: 0,
+        lineHeight: 1.2,
+        width: 'auto',
+        height: 'auto',
+        textAlign: 'left'
+    };
 
             textElements.push(elementData);
             canvas.appendChild(element);
@@ -623,17 +644,18 @@
         function updateControls() {
             if (!selectedElement) return;
 
-            document.getElementById('textContent').value = selectedElement.text;
-            document.getElementById('fontFamily').value = selectedElement.fontFamily;
-            document.getElementById('fontSize').value = selectedElement.fontSize;
-            document.getElementById('fontWeight').value = selectedElement.fontWeight;
-            document.getElementById('textColor').value = selectedElement.color;
-            document.getElementById('letterSpacing').value = selectedElement.letterSpacing;
-            document.getElementById('lineHeight').value = selectedElement.lineHeight;
-            document.getElementById('elementWidth').value = selectedElement.width === 'auto' ? '' : selectedElement.width;
-            document.getElementById('elementHeight').value = selectedElement.height === 'auto' ? '' : selectedElement.height;
-            document.getElementById('fontSizeDisplay').textContent = selectedElement.fontSize + 'px';
-            document.getElementById('coordinates').textContent = `Position: x: ${selectedElement.x}, y: ${selectedElement.y}`;
+    document.getElementById('textContent').value = selectedElement.text;
+    document.getElementById('fontFamily').value = selectedElement.fontFamily;
+    document.getElementById('fontSize').value = selectedElement.fontSize;
+    document.getElementById('fontWeight').value = selectedElement.fontWeight;
+    document.getElementById('textColor').value = selectedElement.color;
+    document.getElementById('letterSpacing').value = selectedElement.letterSpacing;
+    document.getElementById('lineHeight').value = selectedElement.lineHeight;
+    document.getElementById('elementWidth').value = selectedElement.width === 'auto' ? '' : selectedElement.width;
+    document.getElementById('elementHeight').value = selectedElement.height === 'auto' ? '' : selectedElement.height;
+    document.getElementById('fontSizeDisplay').textContent = selectedElement.fontSize + 'px';
+    document.getElementById('coordinates').textContent = `Position: x: ${selectedElement.x}, y: ${selectedElement.y}`;
+    document.getElementById('textAlign').value = selectedElement.textAlign || 'left';
         }
 
         function startResize(e, handleType) {
@@ -823,46 +845,44 @@
                 return;
             }
 
-            const element = document.createElement('div');
-            element.className = 'text-element';
-            element.textContent = selectedElement.text;
-            
-            // Offset position for the duplicate
-            const newX = selectedElement.x + 20;
-            const newY = selectedElement.y + 20;
-            
-            element.style.left = newX + 'px';
-            element.style.top = newY + 'px';
-            element.style.fontSize = selectedElement.fontSize + 'px';
-            element.style.fontFamily = selectedElement.fontFamily;
-            element.style.color = selectedElement.color;
-            element.style.fontWeight = selectedElement.fontWeight;
-            element.style.letterSpacing = selectedElement.letterSpacing + 'px';
-            element.style.lineHeight = selectedElement.lineHeight;
-            
-            // Copy width and height
-            if (selectedElement.width !== 'auto') {
-                element.style.width = selectedElement.width + 'px';
-            }
-            if (selectedElement.height !== 'auto') {
-                element.style.height = selectedElement.height + 'px';
-            }
-            
-            const elementData = {
-                id: Date.now() + Math.random(),
-                element: element,
-                text: selectedElement.text,
-                x: newX,
-                y: newY,
-                fontSize: selectedElement.fontSize,
-                fontFamily: selectedElement.fontFamily,
-                color: selectedElement.color,
-                fontWeight: selectedElement.fontWeight,
-                letterSpacing: selectedElement.letterSpacing,
-                lineHeight: selectedElement.lineHeight,
-                width: selectedElement.width,
-                height: selectedElement.height
-            };
+    const element = document.createElement('div');
+    element.className = 'text-element';
+    element.textContent = selectedElement.text;
+    // Offset position for the duplicate
+    const newX = selectedElement.x + 20;
+    const newY = selectedElement.y + 20;
+    element.style.left = newX + 'px';
+    element.style.top = newY + 'px';
+    element.style.fontSize = selectedElement.fontSize + 'px';
+    element.style.fontFamily = selectedElement.fontFamily;
+    element.style.color = selectedElement.color;
+    element.style.fontWeight = selectedElement.fontWeight;
+    element.style.letterSpacing = selectedElement.letterSpacing + 'px';
+    element.style.lineHeight = selectedElement.lineHeight;
+    element.style.textAlign = selectedElement.textAlign || 'left';
+    // Copy width and height
+    if (selectedElement.width !== 'auto') {
+        element.style.width = selectedElement.width + 'px';
+    }
+    if (selectedElement.height !== 'auto') {
+        element.style.height = selectedElement.height + 'px';
+    }
+    const elementData = {
+        id: Date.now() + Math.random(),
+        element: element,
+        text: selectedElement.text,
+        x: newX,
+        y: newY,
+        fontSize: selectedElement.fontSize,
+        fontFamily: selectedElement.fontFamily,
+        color: selectedElement.color,
+        fontWeight: selectedElement.fontWeight,
+        letterSpacing: selectedElement.letterSpacing,
+        lineHeight: selectedElement.lineHeight,
+        width: selectedElement.width,
+        height: selectedElement.height,
+        textAlign: selectedElement.textAlign || 'left'
+    };
 
             textElements.push(elementData);
             canvas.appendChild(element);
@@ -962,6 +982,14 @@
                 updateResizeHandles();
             }
         });
+
+// Text alignment control
+document.getElementById('textAlign').addEventListener('change', (e) => {
+    if (selectedElement) {
+        selectedElement.textAlign = e.target.value;
+        selectedElement.element.style.textAlign = e.target.value;
+    }
+});
 
         function deleteSelectedElement() {
             if (selectedElement) {
