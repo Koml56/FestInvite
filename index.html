@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini Site Helper</title>
+    <title>Self-Learning Gemini Site Helper</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <style>
@@ -32,6 +32,12 @@
             color: white;
             font-size: 1.5rem;
             font-weight: 600;
+        }
+
+        .header .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
         }
 
         .api-setup {
@@ -104,6 +110,27 @@
             text-align: center;
             margin: 0 auto;
             font-style: italic;
+        }
+
+        .learning-message {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            color: #8b2635;
+            border: 1px solid #f8d7da;
+            text-align: center;
+            margin: 0 auto;
+            font-weight: 600;
+        }
+
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
         }
 
         .file-preview {
@@ -223,6 +250,15 @@
             font-size: 0.85rem;
         }
 
+        .function-registry {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border-radius: 5px;
+            font-size: 0.85rem;
+        }
+
         @media (max-width: 768px) {
             .header, .api-setup, .chat-container {
                 margin-left: 1rem;
@@ -237,7 +273,8 @@
 </head>
 <body>
     <div class="header">
-        <h1>🤖 Gemini Site Helper</h1>
+        <h1>🧠 Self-Learning Gemini Helper</h1>
+        <div class="subtitle">I can learn new functions on demand!</div>
     </div>
 
     <div class="api-setup">
@@ -247,7 +284,7 @@
     <div class="chat-container">
         <div class="chat-messages" id="chatMessages">
             <div class="message system-message">
-                Welcome! I can help you with file conversions, text processing, and more. Just tell me what you need!
+                Welcome! I can help you with file conversions and learn new functions as you need them. Try asking for something I don't know yet!
             </div>
         </div>
         
@@ -255,18 +292,24 @@
             <input type="file" id="fileInput" class="file-input" multiple accept="*/*">
             <label for="fileInput" class="file-input-label" title="Upload files">📎</label>
             
-            <textarea id="chatInput" class="chat-input" placeholder="Type your message... (e.g., 'Convert this file to PDF')" rows="1"></textarea>
+            <textarea id="chatInput" class="chat-input" placeholder="Type your message... (e.g., 'Convert this file to JPG')" rows="1"></textarea>
             
             <button id="sendButton" class="send-button">Send</button>
         </div>
     </div>
 
     <script>
-        class GeminiSiteHelper {
+        class SelfLearningGeminiHelper {
             constructor() {
                 this.apiKey = '';
                 this.selectedFiles = [];
                 this.conversationHistory = [];
+                this.availableFunctions = new Set([
+                    'convert to pdf',
+                    'extract text',
+                    'analyze image'
+                ]);
+                this.dynamicFunctions = new Map();
                 
                 this.initializeElements();
                 this.setupEventListeners();
@@ -368,7 +411,7 @@
                     const response = await this.callGemini(userMessage, this.selectedFiles);
                     this.removeMessage(loadingMessage);
                     
-                    // Process the response to detect function calls
+                    // Process the response to detect function calls or learning needs
                     await this.processGeminiResponse(response, userMessage);
                     
                 } catch (error) {
@@ -383,17 +426,21 @@
             }
 
             async processGeminiResponse(response, originalMessage) {
-                // Check if Gemini suggests any function calls
                 const text = response.toLowerCase();
                 
-                // PDF conversion detection
-                if (text.includes('convert') && text.includes('pdf') && this.selectedFiles.length > 0) {
+                // Check if Gemini indicates it needs to learn a new function
+                if (text.includes('learn_new_function:') || text.includes('need_to_learn:')) {
+                    await this.learnNewFunction(response, originalMessage);
+                    return;
+                }
+                
+                // Check existing functions
+                if (text.includes('convert') && text.includes('pdf')) {
                     this.addMessage('bot', "I'll convert your file(s) to PDF now.");
                     await this.convertToPDF(this.selectedFiles);
                     return;
                 }
                 
-                // Text extraction detection
                 if ((text.includes('extract') && text.includes('text')) || 
                     (text.includes('read') && text.includes('content'))) {
                     this.addMessage('bot', "I'll extract the text content from your file(s).");
@@ -401,32 +448,126 @@
                     return;
                 }
                 
-                // Image analysis detection
                 if (text.includes('analyze') && text.includes('image')) {
                     this.addMessage('bot', "I'll analyze the image(s) for you.");
                     await this.analyzeImages(this.selectedFiles);
                     return;
+                }
+
+                // Check dynamic functions
+                for (const [functionName, functionCode] of this.dynamicFunctions) {
+                    if (text.includes(functionName.toLowerCase())) {
+                        this.addMessage('bot', `I'll use my learned ${functionName} function.`);
+                        await this.executeDynamicFunction(functionName, functionCode);
+                        return;
+                    }
                 }
                 
                 // Default response
                 this.addMessage('bot', response);
             }
 
+            async learnNewFunction(response, originalMessage) {
+                this.addMessage('learning', '🧠 I need to learn a new function! Let me think...');
+                
+                const learningPrompt = `
+I need to learn a new function based on this user request: "${originalMessage}"
+
+Current available functions: ${Array.from(this.availableFunctions).join(', ')}
+
+The user is asking for something I can't do yet. I need to:
+1. Identify what function is needed
+2. Write JavaScript code for that function
+3. Return the code in this exact format:
+
+FUNCTION_NAME: [descriptive name]
+FUNCTION_CODE:
+[complete JavaScript function code that can be executed]
+
+The function should work with the files in this.selectedFiles array and use existing utility methods like:
+- this.readFileAsText(file)
+- this.readFileAsArrayBuffer(file) 
+- this.loadImage(file)
+- this.downloadFile(blob, filename)
+- this.addMessage(type, content)
+
+For image format conversions, use Canvas API. For other conversions, analyze what's needed.
+
+Write the complete function now:`;
+
+                try {
+                    const learningResponse = await this.callGemini(learningPrompt);
+                    
+                    // Parse the learning response
+                    const functionMatch = learningResponse.match(/FUNCTION_NAME:\s*(.+)/);
+                    const codeMatch = learningResponse.match(/FUNCTION_CODE:\s*([\s\S]+)/);
+                    
+                    if (functionMatch && codeMatch) {
+                        const functionName = functionMatch[1].trim();
+                        const functionCode = codeMatch[1].trim();
+                        
+                        // Store the new function
+                        this.dynamicFunctions.set(functionName, functionCode);
+                        this.availableFunctions.add(functionName.toLowerCase());
+                        
+                        this.addMessage('learning', `✨ Learned new function: "${functionName}"`);
+                        this.addCodeBlock(functionCode);
+                        
+                        // Now try to execute it
+                        this.addMessage('bot', `Now I'll use my new ${functionName} function!`);
+                        await this.executeDynamicFunction(functionName, functionCode);
+                        
+                    } else {
+                        this.addMessage('bot', "I couldn't parse the new function properly. Let me try a different approach.");
+                        this.addMessage('bot', learningResponse);
+                    }
+                    
+                } catch (error) {
+                    this.addMessage('bot', `Error while learning: ${error.message}`);
+                }
+            }
+
+            async executeDynamicFunction(functionName, functionCode) {
+                try {
+                    // Create a safe execution context
+                    const functionWrapper = new Function('files', 'helper', `
+                        ${functionCode}
+                        // If there's a main function, call it
+                        if (typeof convertToJPG !== 'undefined') {
+                            return convertToJPG(files, helper);
+                        } else if (typeof convertToPNG !== 'undefined') {
+                            return convertToPNG(files, helper);
+                        } else if (typeof convertToGIF !== 'undefined') {
+                            return convertToGIF(files, helper);
+                        } else if (typeof main !== 'undefined') {
+                            return main(files, helper);
+                        }
+                    `);
+                    
+                    await functionWrapper(this.selectedFiles, this);
+                    this.addMessage('system', `✅ Successfully executed ${functionName}`);
+                    
+                } catch (error) {
+                    this.addMessage('bot', `Error executing function: ${error.message}`);
+                }
+            }
+
             async callGemini(message, files = []) {
-                const systemPrompt = `You are a helpful assistant integrated into a web application. You can analyze user requests and determine what functions to call. 
+                const systemPrompt = `You are a self-learning assistant. You can analyze user requests and either execute existing functions or learn new ones.
 
-Available functions:
-- PDF conversion: Convert various file formats to PDF
-- Text extraction: Extract text content from documents and images
-- Image analysis: Analyze and describe images
+Current available functions: ${Array.from(this.availableFunctions).join(', ')}
 
-When a user asks to convert files to PDF, respond with something like "I'll convert your file to PDF" and mention "convert pdf" in your response.
-When asked to extract text, mention "extract text" in your response.
-When asked to analyze images, mention "analyze image" in your response.
+When a user asks for something you CAN do, respond normally and mention the function name.
 
-Analyze this user request and respond appropriately: "${message}"
+When a user asks for something you CAN'T do yet, respond with "NEED_TO_LEARN:" followed by analysis of what function is needed.
 
-If files are attached, consider what the user might want to do with them based on their message.`;
+Examples:
+- If user asks "convert to PDF" and you have that function → respond normally
+- If user asks "convert to JPG" and you DON'T have that function → respond "NEED_TO_LEARN: The user wants to convert files to JPG format, but I don't have a JPG conversion function yet."
+
+User request: "${message}"
+
+Analyze this request and respond appropriately.`;
 
                 const requestBody = {
                     contents: [{
@@ -456,13 +597,13 @@ If files are attached, consider what the user might want to do with them based o
                 return data.candidates[0].content.parts[0].text;
             }
 
+            // Existing functions (PDF, text extraction, image analysis) remain the same
             async convertToPDF(files) {
                 try {
                     const { jsPDF } = window.jspdf;
                     
                     for (const file of files) {
                         if (file.type.startsWith('text/') || file.name.endsWith('.txt')) {
-                            // Text to PDF
                             const text = await this.readFileAsText(file);
                             const pdf = new jsPDF();
                             const lines = pdf.splitTextToSize(text, 180);
@@ -472,7 +613,6 @@ If files are attached, consider what the user might want to do with them based o
                             this.downloadFile(pdfBlob, file.name.replace(/\.[^/.]+$/, '') + '.pdf');
                             
                         } else if (file.name.endsWith('.docx')) {
-                            // DOCX to PDF (requires mammoth.js for text extraction)
                             const arrayBuffer = await this.readFileAsArrayBuffer(file);
                             const result = await mammoth.extractRawText({arrayBuffer});
                             
@@ -484,7 +624,6 @@ If files are attached, consider what the user might want to do with them based o
                             this.downloadFile(pdfBlob, file.name.replace(/\.[^/.]+$/, '') + '.pdf');
                             
                         } else if (file.type.startsWith('image/')) {
-                            // Image to PDF
                             const img = await this.loadImage(file);
                             const pdf = new jsPDF();
                             
@@ -603,6 +742,15 @@ If files are attached, consider what the user might want to do with them based o
                 return messageDiv;
             }
 
+            addCodeBlock(code) {
+                const codeDiv = document.createElement('div');
+                codeDiv.className = 'code-block';
+                codeDiv.textContent = code;
+                
+                this.chatMessages.appendChild(codeDiv);
+                this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+            }
+
             addFilePreview(files) {
                 const previewDiv = document.createElement('div');
                 previewDiv.className = 'file-preview';
@@ -620,7 +768,7 @@ If files are attached, consider what the user might want to do with them based o
         }
 
         // Initialize the application
-        const siteHelper = new GeminiSiteHelper();
+        const siteHelper = new SelfLearningGeminiHelper();
     </script>
 </body>
 </html>
