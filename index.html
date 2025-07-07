@@ -463,8 +463,8 @@
                     }
                 }
                 
-                // Default response
-                this.addMessage('bot', response);
+                // If nothing matches, try to learn a new function
+                await this.learnNewFunction(response, originalMessage);
             }
 
             async learnNewFunction(response, originalMessage) {
@@ -475,25 +475,44 @@ I need to learn a new function based on this user request: "${originalMessage}"
 
 Current available functions: ${Array.from(this.availableFunctions).join(', ')}
 
-The user is asking for something I can't do yet. I need to:
-1. Identify what function is needed
-2. Write JavaScript code for that function
-3. Return the code in this exact format:
+The user is asking for something I can't do yet. I need to write a simple JavaScript function.
 
-FUNCTION_NAME: [descriptive name]
+IMPORTANT RULES:
+- Use simple string concatenation instead of template literals
+- Use helper.methodName() to call utility methods
+- Use file.name.split('.')[0] + '.jpg' instead of template literals
+- Use 'files' as the parameter name
+- Keep code simple and avoid complex syntax
+
+FUNCTION_NAME: convertToJPG
 FUNCTION_CODE:
-[complete JavaScript function code that can be executed]
+async function convertToJPG(files) {
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file.type.startsWith('image/')) {
+            try {
+                const img = await helper.loadImage(file);
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+                canvas.toBlob(function(blob) {
+                    const newName = file.name.split('.')[0] + '.jpg';
+                    helper.downloadFile(blob, newName);
+                }, 'image/jpeg', 0.95);
+            } catch (error) {
+                helper.addMessage('bot', 'Error converting ' + file.name + ': ' + error.message);
+            }
+        } else {
+            helper.addMessage('bot', file.name + ' is not an image file.');
+        }
+    }
+}
 
-The function should work with the files in this.selectedFiles array and use existing utility methods like:
-- this.readFileAsText(file)
-- this.readFileAsArrayBuffer(file) 
-- this.loadImage(file)
-- this.downloadFile(blob, filename)
-- this.addMessage(type, content)
-
-For image format conversions, use Canvas API. For other conversions, analyze what's needed.
-
-Write the complete function now:`;
+Write a similar function for the user's request: "${originalMessage}"`;
 
                 try {
                     const learningResponse = await this.callGemini(learningPrompt);
@@ -504,7 +523,11 @@ Write the complete function now:`;
                     
                     if (functionMatch && codeMatch) {
                         const functionName = functionMatch[1].trim();
-                        const functionCode = codeMatch[1].trim();
+                        let functionCode = codeMatch[1].trim();
+                        
+                        // Clean up the code - remove any problematic syntax
+                        functionCode = functionCode.replace(/`([^`]*)`/g, '"$1"'); // Replace backticks with quotes
+                        functionCode = functionCode.replace(/\$\{([^}]+)\}/g, '" + $1 + "'); // Replace template literals
                         
                         // Store the new function
                         this.dynamicFunctions.set(functionName, functionCode);
@@ -518,12 +541,13 @@ Write the complete function now:`;
                         await this.executeDynamicFunction(functionName, functionCode);
                         
                     } else {
-                        this.addMessage('bot', "I couldn't parse the new function properly. Let me try a different approach.");
-                        this.addMessage('bot', learningResponse);
+                        this.addMessage('bot', "I couldn't parse the new function properly. Let me use my built-in conversion instead.");
+                        await this.executeSimpleConversion(originalMessage);
                     }
                     
                 } catch (error) {
-                    this.addMessage('bot', `Error while learning: ${error.message}`);
+                    this.addMessage('bot', `Error while learning: ${error.message}. Using built-in conversion instead.`);
+                    await this.executeSimpleConversion(originalMessage);
                 }
             }
 
@@ -531,63 +555,127 @@ Write the complete function now:`;
                 try {
                     // Create a safe execution context with proper function binding
                     const safeCode = `
-                        // Bind helper methods to context
-                        const addMessage = helper.addMessage.bind(helper);
-                        const downloadFile = helper.downloadFile.bind(helper);
-                        const readFileAsText = helper.readFileAsText.bind(helper);
-                        const readFileAsArrayBuffer = helper.readFileAsArrayBuffer.bind(helper);
-                        const loadImage = helper.loadImage.bind(helper);
+                        // Create helper object with all methods
+                        const helper = {
+                            addMessage: function(type, content) {
+                                helperInstance.addMessage(type, content);
+                            },
+                            downloadFile: function(blob, filename) {
+                                helperInstance.downloadFile(blob, filename);
+                            },
+                            loadImage: function(file) {
+                                return helperInstance.loadImage(file);
+                            },
+                            readFileAsText: function(file) {
+                                return helperInstance.readFileAsText(file);
+                            },
+                            readFileAsArrayBuffer: function(file) {
+                                return helperInstance.readFileAsArrayBuffer(file);
+                            }
+                        };
                         
-                        // Define the function code
+                        // Execute the function code
                         ${functionCode}
                         
-                        // Execute the main function
-                        if (typeof convertFileToJPG !== 'undefined') {
-                            return convertFileToJPG.call(helper, files);
-                        } else if (typeof convertToJPG !== 'undefined') {
-                            return convertToJPG.call(helper, files);
-                        } else if (typeof convertToPNG !== 'undefined') {
-                            return convertToPNG.call(helper, files);
-                        } else if (typeof convertToGIF !== 'undefined') {
-                            return convertToGIF.call(helper, files);
-                        } else if (typeof main !== 'undefined') {
-                            return main.call(helper, files);
-                        } else {
-                            // Try to find any function that takes files as parameter
-                            const funcNames = Object.getOwnPropertyNames(this).filter(name => 
-                                typeof this[name] === 'function' && name.includes('convert')
-                            );
-                            if (funcNames.length > 0) {
-                                return this[funcNames[0]](files);
+                        // Try to find and call the function
+                        const functionNames = ['convertToGIF', 'convertToJPG', 'convertToPNG', 'convertToWebP', 'main'];
+                        for (let fname of functionNames) {
+                            if (typeof eval(fname) !== 'undefined') {
+                                return eval(fname + '(files)');
                             }
                         }
                     `;
                     
-                    const functionWrapper = new Function('files', 'helper', safeCode);
+                    const functionWrapper = new Function('files', 'helperInstance', safeCode);
                     await functionWrapper(this.selectedFiles, this);
-                    this.addMessage('system', `✅ Successfully executed ${functionName}`);
+                    this.addMessage('system', `✅ Successfully executed learned ${functionName}`);
                     
                 } catch (error) {
-                    this.addMessage('bot', `Error executing function: ${error.message}`);
-                    this.addMessage('bot', `Let me try a simpler approach...`);
+                    this.addMessage('bot', `Error executing learned function: ${error.message}`);
+                    this.addMessage('bot', `Let me try to learn a different approach...`);
                     
-                    // Fallback: try to execute as a simpler function
-                    try {
-                        await this.executeSimpleConversion(functionName);
-                    } catch (fallbackError) {
-                        this.addMessage('bot', `Fallback also failed: ${fallbackError.message}`);
-                    }
+                    // Try to learn again with a more specific prompt
+                    await this.learnSimpleFunction(functionName);
                 }
             }
 
-            async executeSimpleConversion(functionName) {
-                // Simple fallback conversion based on function name
-                if (functionName.toLowerCase().includes('jpg') || functionName.toLowerCase().includes('jpeg')) {
-                    await this.convertToJPG(this.selectedFiles);
-                } else if (functionName.toLowerCase().includes('png')) {
-                    await this.convertToPNG(this.selectedFiles);
-                } else if (functionName.toLowerCase().includes('gif')) {
-                    await this.convertToGIF(this.selectedFiles);
+            async learnSimpleFunction(originalMessage) {
+                const simplePrompt = `
+Write a very simple JavaScript function based on: "${originalMessage}"
+
+IMPORTANT: Use only basic syntax:
+- Use var instead of let/const
+- Use regular for loops, not forEach
+- Use regular function declarations  
+- Use string concatenation with +
+- No template literals or complex syntax
+- Handle video files by extracting frames with video element and canvas
+- Handle image files with canvas operations
+
+For video to GIF conversion, note browser limitations and provide frame extraction instead.
+
+Example structure:
+function convertToFormat(files) {
+    for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        if (file.type.indexOf('video/') === 0) {
+            helper.addMessage('bot', 'Processing video file...');
+            // Video processing code here
+        } else if (file.type.indexOf('image/') === 0) {
+            helper.addMessage('bot', 'Processing image file...');
+            // Image processing code here  
+        }
+    }
+}
+
+Write the complete function for: ${originalMessage}`;
+
+                try {
+                    const response = await this.callGemini(simplePrompt);
+                    const codeMatch = response.match(/function\s+\w+\([^)]*\)\s*{[\s\S]*?^}/m);
+                    
+                    if (codeMatch) {
+                        const simpleCode = codeMatch[0];
+                        this.addMessage('learning', '🧠 Learning simpler version...');
+                        this.addCodeBlock(simpleCode);
+                        
+                        try {
+                            const safeCode = `
+                                const helper = {
+                                    addMessage: function(type, content) {
+                                        helperInstance.addMessage(type, content);
+                                    },
+                                    downloadFile: function(blob, filename) {
+                                        helperInstance.downloadFile(blob, filename);
+                                    },
+                                    loadImage: function(file) {
+                                        return helperInstance.loadImage(file);
+                                    }
+                                };
+                                
+                                ${simpleCode}
+                                
+                                // Find and call the function
+                                const funcName = '${simpleCode.match(/function\s+(\w+)/)[1]}';
+                                return eval(funcName + '(files)');
+                            `;
+                            
+                            const functionWrapper = new Function('files', 'helperInstance', safeCode);
+                            await functionWrapper(this.selectedFiles, this);
+                            
+                            this.addMessage('system', `✅ Successfully learned and executed function`);
+                        } catch (execError) {
+                            this.addMessage('bot', `Execution error: ${execError.message}`);
+                            this.addMessage('bot', 'Learning attempt failed. The task might require server-side tools not available in the browser.');
+                        }
+                        
+                    } else {
+                        this.addMessage('bot', 'Sorry, I couldn\'t learn this function. The task might be too complex for browser-only processing.');
+                        this.addMessage('bot', 'For video processing tasks, I recommend using Google Colab for better capabilities.');
+                    }
+                } catch (error) {
+                    this.addMessage('bot', `Learning failed: ${error.message}.`);
+                    this.addMessage('bot', 'For complex tasks like video processing, consider uploading files and asking me to generate a Google Colab notebook!');
                 }
             }
 
@@ -678,6 +766,32 @@ Write the complete function now:`;
                     }
                 } catch (error) {
                     this.addMessage('bot', `Error converting to GIF: ${error.message}`);
+                }
+            }
+
+            async convertToWebP(files) {
+                try {
+                    for (const file of files) {
+                        if (!file.type.startsWith('image/')) {
+                            this.addMessage('bot', `${file.name} is not an image file.`);
+                            continue;
+                        }
+
+                        const img = await this.loadImage(file);
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+                        
+                        canvas.toBlob((blob) => {
+                            const fileName = file.name.replace(/\.[^/.]+$/, '') + '.webp';
+                            this.downloadFile(blob, fileName);
+                        }, 'image/webp', 0.95);
+                    }
+                } catch (error) {
+                    this.addMessage('bot', `Error converting to WebP: ${error.message}`);
                 }
             }
 
